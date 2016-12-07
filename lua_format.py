@@ -14,14 +14,26 @@ import LuaFormat as lf
 
 class LuaFormatCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        # check lua file
+        # Check whether the Lua files
         suffix_setting = self.view.settings().get('syntax')
         file_suffix = suffix_setting.split('.')[0]
         if file_suffix[-3:].lower() != 'lua': return
 
-        # get content.
+        # Get content of replacement
         region = sublime.Region(0, self.view.size())
         content = self.view.substr(region)
-        
-        # replace content
+        print(len(content))
+
+        # Get cursor position before the replacement
+        tp = self.view.sel()[0].b
+        row, col = self.view.rowcol(tp)
+
         self.view.replace(edit, region, lf.format(content))
+
+        # Deal cursor position
+        ntp = self.view.line(self.view.text_point(row, 0)).b
+        regions = self.view.sel()
+        regions.clear()
+        regions.add(sublime.Region(ntp, ntp))
+        sublime.set_timeout_async(lambda: self.view.show_at_center(sublime.Region(ntp, ntp)), 20)
+        
