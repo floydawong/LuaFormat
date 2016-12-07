@@ -59,6 +59,17 @@ UnindentKeyword = [
 ]
 
 # ----------------------------------------------------------
+# Tag
+# ----------------------------------------------------------
+_tags = []
+_tag_stack = {}
+_tag_id = 0
+
+def generate_tag_id():
+    _tag_id += 1
+    return _tag_id
+
+# ----------------------------------------------------------
 # Line
 # ----------------------------------------------------------
 debug_Index = 0
@@ -76,6 +87,7 @@ class Line():
         return s
 
     def concat(self, node):
+        
         if DEBUG:
             global debug_Index
             debug_Index += 1
@@ -149,7 +161,10 @@ class Node():
         return self._ctype
 
     def set_tag(self, tag):
-        self._tag.append(tag)
+        if isinstance(tag, list):
+            self._tag.extend(tag)
+        else:
+            self._tag.append(tag)
 
     def get_tag(self):
         return self._tag
@@ -335,8 +350,10 @@ def foreach_char(node, c):
 def purge():
     global _lines
     global _nodes
+    global _tags
     _lines = []
     _nodes = []
+    _tags  = []
 
 def format(content):
     purge()
@@ -346,6 +363,7 @@ def format(content):
             node = foreach_char(node, c)
     foreach_node()
     return foreach_line()
+
 
 # Debug
 if __name__ == '__main__':
