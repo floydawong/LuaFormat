@@ -37,7 +37,7 @@ NodePattern = {
     NodeType.COMMENT_MULTI   : [],
 }
 
-COMMENT_TYPE_LIST = [
+CommentTypeList = [
     NodeType.STRING,
     NodeType.COMMENT_SINGLE,
     NodeType.COMMENT_MULTI
@@ -107,7 +107,7 @@ def create_line():
 
 def foreach_line():
     def is_comment(node):
-        return node.get_type() in COMMENT_TYPE_LIST
+        return node.get_type() in CommentTypeList
 
     indent = 0
     for line in _lines:
