@@ -22,7 +22,6 @@ class LuaFormatCommand(sublime_plugin.TextCommand):
         # Get content of replacement
         region = sublime.Region(0, self.view.size())
         content = self.view.substr(region)
-        print(len(content))
 
         # Get cursor position before the replacement
         tp = self.view.sel()[0].b
