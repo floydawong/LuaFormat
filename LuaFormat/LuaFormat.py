@@ -332,6 +332,14 @@ def format(content):
     purge()
     node = None
     for c in content:
-        node = foreach_char(node, c)
+        if c != '\t':
+            node = foreach_char(node, c)
     foreach_node()
     return foreach_line()
+
+# Debug
+if __name__ == '__main__':
+    content = """
+.
+    """
+    print(format(content))
