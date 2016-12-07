@@ -46,8 +46,8 @@ IndentKeyword = [
     'repeat',
     'while',
     'if',
-    'else',
-    'elseif'
+    # 'else',
+    # 'elseif'
 ]
 
 UnindentKeyword = [
@@ -110,11 +110,14 @@ def foreach_line():
     for line in _lines:
         line.set_indent(indent)
         for node in line.get_nodes():
-            if is_comment(node) is False and str(node) in IndentKeyword:
-                indent += 1
-            if is_comment(node) is False and str(node) in UnindentKeyword:
-                indent -= 1
-                line.set_indent(indent)
+            if str(node) == 'else' or str(node) == 'elseif':
+                line.set_indent(indent - 1)
+            else:
+                if is_comment(node) is False and str(node) in IndentKeyword:
+                    indent += 1
+                if is_comment(node) is False and str(node) in UnindentKeyword:
+                    indent -= 1
+                    line.set_indent(indent)
 
     result = ''
     for line in _lines:
