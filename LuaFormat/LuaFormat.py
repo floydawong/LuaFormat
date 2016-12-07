@@ -257,7 +257,8 @@ def check_comment(node, c):
         if comment_flag_single:
             if c == '\n':
                 comment_flag_single = False
-            node.concat(c)
+            else:
+                node.concat(c)
         elif c == '-' and str(node)[-1:] == '-':
             node.concat(c)
             node.set_type(NodeType.COMMENT_SINGLE)
