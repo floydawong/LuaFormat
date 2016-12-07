@@ -2,7 +2,6 @@
 # coder : Floyda
 # date  : 2016-12-7
 
-DEBUG = False
 
 # ----------------------------------------------------------
 # Const
@@ -72,7 +71,6 @@ def generate_tag_id():
 # ----------------------------------------------------------
 # Line
 # ----------------------------------------------------------
-debug_Index = 0
 _lines = []
 
 class Line():
@@ -87,11 +85,6 @@ class Line():
         return s
 
     def concat(self, node):
-        
-        if DEBUG:
-            global debug_Index
-            debug_Index += 1
-            print('[id]:%d' % debug_Index, str(node), '[type]:%d' % node.get_type())
         if len(self._nodes) == 0 and node.get_type() == NodeType.BLANK:
             return
         last_node = self._nodes[-1:]
