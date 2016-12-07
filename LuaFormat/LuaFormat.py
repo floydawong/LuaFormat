@@ -7,6 +7,9 @@ DEBUG = False
 # ----------------------------------------------------------
 # Const
 # ----------------------------------------------------------
+class TagType():
+    BRACKET_CHUNK = 0
+    
 class NodeType():
     WORD            = 0
     BLANK           = 1
@@ -133,6 +136,7 @@ class Node():
     def __init__(self, char='', ctype=0):
         self._str = char
         self._ctype = ctype
+        self._tag = []
 
     def __str__(self):
         if self._str == ' ': return ' '
@@ -143,6 +147,12 @@ class Node():
 
     def get_type(self):
         return self._ctype
+
+    def set_tag(self, tag):
+        self._tag.append(tag)
+
+    def get_tag(self):
+        return self._tag
 
     def concat(self, c):
         if self._str == c == ' ': return
