@@ -10,7 +10,7 @@ _lines = []
 # ----------------------------------------------------------
 SETTING_TAB_SIZE = 4
 SETTING_SEPARATOR_EXCLUDE = True
-SETTING_OPERATOR_EXCLUDE = False
+SETTING_OPERATOR_EXCLUDE = True
 SETTING_BRACKET_EXCLUDE = False
 # ----------------------------------------------------------
 # Const
@@ -87,6 +87,9 @@ class Line():
     def get_indent(self):
         return self._indent
 
+    def add_indent(self, indent):
+        self._indent += indent
+
 
 def create_line():
     line = Line()
@@ -101,6 +104,9 @@ class IterNode():
 
     def __iter__(self):
         return self
+
+    def __next__(self):
+        return self.next()
 
     def next(self):
         if not self.node :
@@ -126,7 +132,8 @@ class Node():
     def add(self, c):
         if self.type is NodeType.STRING :
             if c == '\n' : self._str += '\\n'; return
-            if c == '\t' : self._str += '\\t'; return
+            # if c == '\t' : self._str += '\\t'; return
+            if c == '\t' : self._str += ' ' * SETTING_TAB_SIZE; return
         self._str += c
 
     def make_property(attr):
@@ -333,36 +340,48 @@ def foreach_word():
 
 def foreach_enter():
     indent = 0
-    bracket_indent = 0
     line = create_line()
 
-    def deal_indent(line, default=0):
-        line.set_indent(indent + default + bracket_indent > 0 and 1 or -1)
+    def deal_indent(line):
+        line.set_indent(indent)
 
     for node in IterNode(_node_entry):
         line.add(node)
         if node.type is NodeType.ENTER:
             line = create_line()
             deal_indent(line)
-
         if str(node) == 'else' or str(node) == 'elseif':
-            deal_indent(line, -1)
-        else:
-            if str(node) in IndentKeyword:
-                indent += 1
-            if str(node) in UnindentKeyword:
-                indent -= 1
-                deal_indent(line)
-
-        if node.type is NodeType.BRACKET :
-            bracket_indent += 1
-        if node.type is NodeType.REVERSE_BRACKET :
-            bracket_indent -= 1
+            # deal_indent(line, -1)
+            indent -= 1
+            deal_indent(line)
+            indent += 1
+        if str(node) in IndentKeyword:
+            indent += 1
+        if str(node) in UnindentKeyword:
+            indent -= 1
             deal_indent(line)
 
 
-def deal_indent():
-    pass
+def foreach_chunk():
+    indent = 0
+    delta = 0
+    def deal_indent(line):
+        line.add_indent(indent)
+
+    for line in _lines:
+        if delta > 0 :
+            indent += 1
+        deal_indent(line)
+        delta = 0
+        for node in line.get_nodes():
+            if node.type is NodeType.BRACKET :
+                delta += 1
+            if node.type is NodeType.REVERSE_BRACKET :
+                delta -= 1
+        if delta < 0 :
+            indent -= 2
+            deal_indent(line)
+            indent += 1
 # ----------------------------------------------------------
 # Main
 # ----------------------------------------------------------
@@ -371,7 +390,8 @@ def purge():
     global _lines
     _node_entry = None
     _lines = []
-    
+
+
 def format(content):
     purge()
     deal_char(content)
@@ -384,7 +404,7 @@ def format(content):
     foreach_equal()
     foreach_bracket()
     foreach_enter()
-    deal_indent()
+    foreach_chunk()
 
     r = ''
     for line in _lines:
