@@ -355,20 +355,27 @@ def foreach_word():
 def foreach_enter():
     indent = 0
     line = create_line()
+    keywordDict = {}
 
-    def deal_indent(line):
-        line.set_indent(indent)
+    def deal_indent(line, delta=0):
+        line.set_indent(indent + delta)
 
     for node in IterNode(_node_entry):
         line.add(node)
+        keywordDict[str(node)] = keywordDict.get(str(node), 0)
+        keywordDict[str(node)] += 1
+
         if node.type is NodeType.ENTER:
-            line = create_line()
-            deal_indent(line)
+            if keywordDict.get('do') == keywordDict.get('end') == 1:
+                indent += 1
+                deal_indent(line)
+                line = create_line()
+            else:
+                line = create_line()
+                deal_indent(line)
+            keywordDict = {}
         if str(node) == 'else' or str(node) == 'elseif':
-            # deal_indent(line, -1)
-            indent -= 1
-            deal_indent(line)
-            indent += 1
+            deal_indent(line, -1)
         if str(node) in IndentKeyword:
             indent += 1
         if str(node) in UnindentKeyword:
