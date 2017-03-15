@@ -5,6 +5,7 @@
 
 _node_entry = None
 _lines = []
+
 # ----------------------------------------------------------
 # Setting
 # ----------------------------------------------------------
@@ -12,6 +13,7 @@ SETTING_TAB_SIZE = 4
 SETTING_SEPARATOR_EXCLUDE = True
 SETTING_OPERATOR_EXCLUDE = True
 SETTING_BRACKET_EXCLUDE = False
+
 # ----------------------------------------------------------
 # Const
 # ----------------------------------------------------------
@@ -61,6 +63,7 @@ UnindentKeyword = [
     'end',
     'until'
 ]
+
 # ----------------------------------------------------------
 # Line
 # ----------------------------------------------------------
@@ -71,7 +74,7 @@ class Line():
 
     def __str__(self):
         r = ''
-        for node in self._nodes: 
+        for node in self._nodes:
             r += str(node)
         return ' ' * SETTING_TAB_SIZE * self._indent + r.strip(' ')
 
@@ -95,6 +98,7 @@ def create_line():
     line = Line()
     _lines.append(line)
     return line
+
 # ----------------------------------------------------------
 # Node
 # ----------------------------------------------------------
@@ -201,6 +205,7 @@ def get_forward_node(node, count):
         r += str(node)[::-1]
         if len(r) >= count: return r[::-1][-count:]
         node = node.last
+
 # ----------------------------------------------------------
 # Format
 # ----------------------------------------------------------
@@ -219,7 +224,7 @@ def deal_char(content):
             ctype = NodeType.WORD
 
         node = create_node(c, ctype)
-        if not _node_entry : 
+        if not _node_entry :
             _node_entry = node
         if last_node :
             last_node.next = node
@@ -252,6 +257,15 @@ def foreach_string():
                     break
                 create_tag(node)
                 break
+
+
+def foreach_string_connect():
+    """ string connect symbol '..' """
+
+    for node in IterNode(_node_entry) :
+        if get_forward_node(node, 2) == '..' :
+            node = merge_last_node(node)
+            node.type = NodeType.OPERATOR
 
 
 def foreach_comment_multi():
@@ -382,6 +396,7 @@ def foreach_chunk():
             indent -= 2
             deal_indent(line)
             indent += 1
+
 # ----------------------------------------------------------
 # Main
 # ----------------------------------------------------------
@@ -396,6 +411,7 @@ def format(content):
     purge()
     deal_char(content)
     foreach_string()
+    foreach_string_connect()
     foreach_comment_multi()
     foreach_comment_single()
     foreach_word()
