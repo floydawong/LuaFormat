@@ -104,6 +104,8 @@ def create_line():
 # Node
 # ----------------------------------------------------------
 class IterNode():
+    """ Node迭代器 """
+
     def __init__(self, node):
         self.node = node
 
@@ -261,10 +263,11 @@ def foreach_string():
 
 
 def foreach_string_connect():
-    """ string connect symbol '..' """
-
+    """ 处理字符串连接符 '..' """
     for node in IterNode(_node_entry) :
-        if get_forward_node(node, 2) == '..' :
+        if get_forward_node(node, 2) == '..' and \
+        get_forward_node(node, 3) != '...' and \
+        str(node.next) != '.' :
             node = merge_last_node(node)
             node.type = NodeType.OPERATOR
 
@@ -430,6 +433,7 @@ def format(content):
     foreach_comment_multi()
     foreach_comment_single()
     foreach_string_connect()
+
     foreach_word()
     foreach_operator()
     foreach_separator()
@@ -442,3 +446,10 @@ def format(content):
     for line in _lines:
         r += str(line)
     return r
+
+# ----------------------------------------------------------
+# Debug
+# ----------------------------------------------------------
+content = """
+"""
+# print(format(content))
