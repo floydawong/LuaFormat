@@ -39,7 +39,7 @@ NodePattern = {
     NodeType.EQUAL           : ['=', '~', '>', '<'],
     NodeType.BRACKET         : ['(', '{', '['],
     NodeType.REVERSE_BRACKET : [')', '}', ']'],
-    NodeType.ENTER           : ['\n'],
+    NodeType.ENTER           : ['\r\n', '\n', '\r'],
     NodeType.STRING          : ['"', "'"],
     NodeType.COMMENT_SINGLE  : [],
     NodeType.COMMENT_MULTI   : [],
@@ -289,6 +289,9 @@ def foreach_comment_multi():
 def foreach_comment_single():
     comment_flag = False
     for node in IterNode(_node_entry) :
+        if node.type == NodeType.ENTER and comment_flag == True:
+            comment_flag = False
+
         if comment_flag:
             merge_last_node(node)
 
@@ -297,9 +300,6 @@ def foreach_comment_single():
             node = merge_last_node(node)
             node.type = NodeType.COMMENT_SINGLE
             string_forward_blank(node)
-
-        if node.type == NodeType.ENTER :
-            comment_flag = False
 
 
 def foreach_operator():
@@ -418,9 +418,9 @@ def format(content):
     purge()
     deal_char(content)
     foreach_string()
-    foreach_string_connect()
     foreach_comment_multi()
     foreach_comment_single()
+    foreach_string_connect()
     foreach_word()
     foreach_operator()
     foreach_separator()
