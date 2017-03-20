@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 # ----------------------------------------------------------
 # Coder : Floyda
 # Date  : 2016-12-8
@@ -295,7 +296,15 @@ def foreach_comment_single():
         if comment_flag:
             merge_last_node(node)
 
-        if node.type != NodeType.COMMENT_MULTI and get_forward_node(node, 2) == '--' :
+        # 不是第一个Node
+        # 前一个Node不是'-'
+        # 不是多行注释里的一部分
+        # 和前面一个Node加起来正好是'--'
+        if node.last != None and \
+         node.last.type != NodeType.COMMENT_SINGLE and \
+         node.type != NodeType.COMMENT_MULTI and \
+         get_forward_node(node, 2) == '--' :
+
             comment_flag = True
             node = merge_last_node(node)
             node.type = NodeType.COMMENT_SINGLE
