@@ -158,7 +158,7 @@ class Node():
             return inner
         return property(get_attr(), set_attr())
     type = make_property("type")
-    last = make_property("last")
+    prev = make_property("prev")
     next = make_property("next")
     del make_property
 
@@ -171,19 +171,19 @@ def create_node(c, ctype):
 
 def insert_blank_node(node):
     bn = create_node(' ', NodeType.BLANK)
-    bn.last = node.last
+    bn.prev = node.prev
     bn.next = node
-    node.last.next = bn
-    node.last = bn
+    node.prev.next = bn
+    node.prev = bn
 
 
-def merge_last_node(node):
-    if not node.last : return
-    lnode = node.last
+def merge_prev_node(node):
+    if not node.prev : return
+    lnode = node.prev
     lnode.add(str(node))
 
     if node.next :
-        node.next.last = lnode
+        node.next.prev = lnode
         lnode.next = node.next
     else:
         lnode.next = None
@@ -193,11 +193,11 @@ def merge_last_node(node):
 
 def string_forward_blank(node):
     while True:
-        if node.last == None or node.last.type == NodeType.ENTER:
+        if node.prev == None or node.prev.type == NodeType.ENTER:
             return
-        if node.last.type != NodeType.BLANK:
+        if node.prev.type != NodeType.BLANK:
             return
-        node = merge_last_node(node)
+        node = merge_prev_node(node)
         node.type = NodeType.COMMENT_SINGLE
 
 
@@ -207,14 +207,14 @@ def get_forward_node(node, count):
         if not node : return r[::-1]
         r += str(node)[::-1]
         if len(r) >= count: return r[::-1][-count:]
-        node = node.last
+        node = node.prev
 
 # ----------------------------------------------------------
 # Format
 # ----------------------------------------------------------
 def deal_char(content):
     global _node_entry
-    last_node = None
+    prev_node = None
 
     for c in content :
         ctype = 0
@@ -229,10 +229,10 @@ def deal_char(content):
         node = create_node(c, ctype)
         if not _node_entry :
             _node_entry = node
-        if last_node :
-            last_node.next = node
-            node.last = last_node
-        last_node = node
+        if prev_node :
+            prev_node.next = node
+            node.prev = prev_node
+        prev_node = node
 
 
 def foreach_string():
@@ -246,7 +246,7 @@ def foreach_string():
 
     for node in IterNode(_node_entry):
         if len(string_tag) > 0 :
-            merge_last_node(node)
+            merge_prev_node(node)
 
         if str(node) in NodePattern[NodeType.STRING]:
             current_tag = string_tag[-1:]
@@ -268,7 +268,7 @@ def foreach_string_connect():
         if get_forward_node(node, 2) == '..' and \
         get_forward_node(node, 3) != '...' and \
         str(node.next) != '.' :
-            node = merge_last_node(node)
+            node = merge_prev_node(node)
             node.type = NodeType.OPERATOR
 
 
@@ -277,16 +277,16 @@ def foreach_comment_multi():
     for node in IterNode(_node_entry) :
         if get_forward_node(node, 2) == ']]' :
             comment_flag = False
-            merge_last_node(node)
+            merge_prev_node(node)
 
         if comment_flag:
-            merge_last_node(node)
+            merge_prev_node(node)
 
         if get_forward_node(node, 4) == '--[[' :
             comment_flag = True
-            node = merge_last_node(node)
-            node = merge_last_node(node)
-            node = merge_last_node(node)
+            node = merge_prev_node(node)
+            node = merge_prev_node(node)
+            node = merge_prev_node(node)
             node.type = NodeType.COMMENT_MULTI
 
 
@@ -297,19 +297,19 @@ def foreach_comment_single():
             comment_flag = False
 
         if comment_flag:
-            merge_last_node(node)
+            merge_prev_node(node)
 
         # 不是第一个Node
         # 前一个Node不是'-'
         # 不是多行注释里的一部分
         # 和前面一个Node加起来正好是'--'
-        if node.last != None and \
-         node.last.type != NodeType.COMMENT_SINGLE and \
+        if node.prev != None and \
+         node.prev.type != NodeType.COMMENT_SINGLE and \
          node.type != NodeType.COMMENT_MULTI and \
          get_forward_node(node, 2) == '--' :
 
             comment_flag = True
-            node = merge_last_node(node)
+            node = merge_prev_node(node)
             node.type = NodeType.COMMENT_SINGLE
             string_forward_blank(node)
 
@@ -318,7 +318,7 @@ def foreach_operator():
     for node in IterNode(_node_entry):
         if node.type == NodeType.OPERATOR :
             if SETTING_OPERATOR_EXCLUDE :
-                if node.last.type is not NodeType.BLANK :
+                if node.prev.type is not NodeType.BLANK :
                     insert_blank_node(node)
                 if node.next.type is not NodeType.BLANK :
                     insert_blank_node(node.next)
@@ -335,13 +335,13 @@ def foreach_separator():
 def foreach_equal():
     for node in IterNode(_node_entry):
         if node.type == NodeType.EQUAL :
-            if node.last and node.last.type is NodeType.EQUAL:
-                merge_last_node(node)
+            if node.prev and node.prev.type is NodeType.EQUAL:
+                merge_prev_node(node)
 
     for node in IterNode(_node_entry):
         if node.type == NodeType.EQUAL :
             if SETTING_OPERATOR_EXCLUDE :
-                if node.last.type is not NodeType.BLANK :
+                if node.prev.type is not NodeType.BLANK :
                     insert_blank_node(node)
                 if node.next.type is not NodeType.BLANK :
                     insert_blank_node(node.next)
@@ -354,14 +354,14 @@ def foreach_bracket():
                     if not node.next.type in [NodeType.BLANK, NodeType.REVERSE_BRACKET]:
                         insert_blank_node(node.next)
             if node.type == NodeType.REVERSE_BRACKET :
-                    if not node.last.type in [NodeType.BLANK, NodeType.BRACKET]:
+                    if not node.prev.type in [NodeType.BLANK, NodeType.BRACKET]:
                         insert_blank_node(node)
 
 
 def foreach_word():
     for node in IterNode(_node_entry) :
-        if node.last and node.last.type == node.type == NodeType.WORD :
-            merge_last_node(node)
+        if node.prev and node.prev.type == node.type == NodeType.WORD :
+            merge_prev_node(node)
 
 
 def foreach_enter():
