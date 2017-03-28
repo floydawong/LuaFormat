@@ -7,7 +7,10 @@ pkg_path = os.path.dirname(__file__)
 if pkg_path not in sys.path:
     sys.path.append(pkg_path)
 
-from .core import LuaFormat
+if sublime.version().startswith('3'):
+    from .core import LuaFormat
+else:
+    from core import LuaFormat
 
 
 class LuaFormatCommand(sublime_plugin.TextCommand):
