@@ -277,7 +277,7 @@ def foreach_string_connect():
 def foreach_comment_multi():
 	comment_flag = False
 	for node in IterNode(_node_entry) :
-		if get_forward_node(node, 2) == ']]' :
+		if comment_flag == True and get_forward_node(node, 2) == ']]' :
 			comment_flag = False
 			merge_prev_node(node)
 
