@@ -1,7 +1,0 @@
-v0.0.1
-======
-> Welcome to use Lua Format!
-
-- Usage
-    - shortcuts: `ctrl + alt + f`
-    - command panel: `ctrl + shift + p` -> `Lua Format`
