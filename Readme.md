@@ -1,15 +1,13 @@
 # Lua Format
-> a plugin of sublime to format lua file.
-
+> format the lua code plugin in sublime text
 
 ## Install
-- Git
-git clone https://github.com/FloydaGithub/sublime_lua_format.git
-
 - Package Control
-    - `ctrl + shift + p` open command panel, input `pca`(Package Control: Add Repository). then input `https://github.com/FloydaGithub/`.
-    - `ctrl + shift + p` open command panel, input `pci`(Package Control: Install Package). then input `sublime_lua_format` to install this plugin.
+`ctrl + shift + p` -> `Package Control: Install Package`
 
+- Git
+`git clone git clone https://github.com/FloydaGithub/LuaFormat.git`
 
 ## Usage
-- shortcut key: `ctrl+alt+f`
+- shortcuts: `ctrl + alt + f`
+- command panel: `ctrl + shift + p` -> `Lua Format`

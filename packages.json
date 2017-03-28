@@ -1,0 +1,19 @@
+{
+    "schema_version": "0.0.1",
+    "packages": [
+        {
+            "name": "LuaFormat",
+            "details": "https://github.com/FloydaGithub/LuaFormat",
+            "readme": "https://github.com/FloydaGithub/LuaFormat/blob/master/Readme.md",
+            "issues": "https://github.com/FloydaGithub/LuaFormat/issues",
+            "labels": ["lua", "format"],
+            "author": ["Floyda"],
+            "releases": [
+                {
+                    "sublime_text": "*",
+                    "tags": true
+                }
+            ]
+        }
+    ]
+}
