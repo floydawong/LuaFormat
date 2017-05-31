@@ -39,3 +39,7 @@ class LuaFormatCommand(sublime_plugin.TextCommand):
         regions.add(cursor_pos)
         sublime.set_timeout_async(lambda: self.view.show_at_center(cursor_pos),
                                   0)
+
+class LuaFormatOnPreSave(sublime_plugin.EventListener):
+    def on_pre_save(self, view):
+        view.run_command("lua_format")
