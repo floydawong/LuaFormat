@@ -1,11 +1,8 @@
+
 import sublime
 import sublime_plugin
 import sys
 import os
-
-pkg_path = os.path.dirname(__file__)
-if pkg_path not in sys.path:
-    sys.path.append(pkg_path)
 
 if sublime.version().startswith('3'):
     from .core import LuaFormat
@@ -39,6 +36,7 @@ class LuaFormatCommand(sublime_plugin.TextCommand):
         regions.add(cursor_pos)
         sublime.set_timeout_async(lambda: self.view.show_at_center(cursor_pos),
                                   0)
+
 
 class LuaFormatOnPreSave(sublime_plugin.EventListener):
     def on_pre_save(self, view):
