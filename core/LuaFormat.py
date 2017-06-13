@@ -425,7 +425,24 @@ def purge():
     _lines = []
 
 
-def format(content):
+def lua_format(content,
+               tab_size=4,
+               separator_exclude=True,
+               operator_exclude=True,
+               bracket_exclude=False):
+
+    # init format setting
+    global SETTING_TAB_SIZE
+    global SETTING_SEPARATOR_EXCLUDE
+    global SETTING_OPERATOR_EXCLUDE
+    global SETTING_BRACKET_EXCLUDE
+
+    SETTING_TAB_SIZE = tab_size
+    SETTING_SEPARATOR_EXCLUDE = separator_exclude
+    SETTING_OPERATOR_EXCLUDE = operator_exclude
+    SETTING_BRACKET_EXCLUDE = bracket_exclude
+
+    # deal content
     content = content.replace('\t', '')
     purge()
     deal_char(content)

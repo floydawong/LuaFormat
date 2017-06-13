@@ -1,13 +1,12 @@
-
 import sublime
 import sublime_plugin
 import sys
 import os
 
 if sublime.version().startswith('3'):
-    from .core import LuaFormat
+    from .core import *
 else:
-    from core import LuaFormat
+    from core import *
 
 
 class LuaFormatCommand(sublime_plugin.TextCommand):
@@ -25,8 +24,21 @@ class LuaFormatCommand(sublime_plugin.TextCommand):
         selection = self.view.sel()[0].b
         row, col = self.view.rowcol(selection)
 
+        # load package settings
+        settings = get_package_settings()
+        tab_size = settings.get('tab_size', 4)
+        separator_exclude = settings.get('separator_exclude', True)
+        operator_exclude = settings.get('operator_exclude', True)
+        bracket_exclude = settings.get('bracket_exclude', False)
+
         # replace the content after format
-        self.view.replace(edit, region, LuaFormat.format(content))
+        self.view.replace(edit, region,
+                          lua_format(
+                              content,
+                              tab_size=tab_size,
+                              separator_exclude=separator_exclude,
+                              operator_exclude=operator_exclude,
+                              bracket_exclude=bracket_exclude))
 
         # deal cursor position
         selection = self.view.full_line(self.view.text_point(row - 1, 0)).b
@@ -40,4 +52,6 @@ class LuaFormatCommand(sublime_plugin.TextCommand):
 
 class LuaFormatOnPreSave(sublime_plugin.EventListener):
     def on_pre_save(self, view):
-        view.run_command("lua_format")
+        settings = get_package_settings()
+        if settings.get('auto_format_on_save', False):
+            view.run_command("lua_format")
