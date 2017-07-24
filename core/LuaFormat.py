@@ -32,7 +32,7 @@ class NodeType:
 NodePattern = {
     NodeType.WORD: [],
     NodeType.BLANK: [' '],
-    NodeType.OPERATOR: ['+', '-', '*', '/', '^'],
+    NodeType.OPERATOR: ['+', '-', '*', '/', '^', '%'],
     NodeType.SEPARATOR: [','],
     NodeType.EQUAL: ['=', '~', '>', '<'],
     NodeType.BRACKET: ['(', '{', '['],
