@@ -1,5 +1,5 @@
-# Lua Format
-> a plugin format the lua code in sublime text
+# LuaFormat
+> Awesome Lua Format With SublimeText
 
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENCE)
 
