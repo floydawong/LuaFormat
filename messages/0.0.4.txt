@@ -1,5 +1,5 @@
-Lua Format v0.0.4
-=================
+LuaFormat v0.0.4
+================
 
 - Added default setting.
 - Whether to run `Lua Format`, set `auto_format_on_save` in settings.
