@@ -1,4 +1,6 @@
 Hi, Welcome to use LuaFormat. It is a development of the plugin.
 So, you can contribution code via github or submit bugs to the issue.
 
+https://github.com/FloydaGithub/LuaFormat
+
 Thank you!
