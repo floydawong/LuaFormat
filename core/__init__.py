@@ -1,6 +1,6 @@
 import os
 
 if os.sys.version.startswith('3'):
-    from .LuaFormat import lua_format
+    from LuaFormat.core.LuaFormat import lua_format
 else:
-    from LuaFormat import lua_format
+    from core.LuaFormat import lua_format
