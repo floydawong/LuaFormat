@@ -298,6 +298,9 @@ def foreach_comment_single():
         if comment_flag:
             merge_prev_node(node)
 
+        if get_forward_node(node, 1) != '-':
+            break
+
         if node.prev != None and \
          node.prev.type != NodeType.COMMENT_SINGLE and \
          node.type != NodeType.COMMENT_MULTI and \
