@@ -425,7 +425,7 @@ def purge():
     _lines = []
 
 
-def lua_format(content,
+def _lua_format(content,
                tab_size=4,
                separator_exclude=True,
                operator_exclude=True,
@@ -458,7 +458,28 @@ def lua_format(content,
     foreach_enter()
     foreach_chunk()
 
+# return a string by default
+def lua_format(content,
+               tab_size=4,
+               separator_exclude=True,
+               operator_exclude=True,
+               bracket_exclude=False):
+
+    _lua_format(content, tab_size, separator_exclude, operator_exclude, bracket_exclude)
     r = ''
     for line in _lines:
         r += str(line)
+    return r
+
+# return a list of string for CudeText.
+def lua_format_by_cudatext(content,
+               tab_size=4,
+               separator_exclude=True,
+               operator_exclude=True,
+               bracket_exclude=False):
+
+    _lua_format(content, tab_size, separator_exclude, operator_exclude, bracket_exclude)
+    r = []
+    for line in _lines:
+        r.append[line]
     return r
