@@ -449,7 +449,6 @@ def _lua_format(content,
     content = content.replace('\t', '')
     purge()
     deal_char(content)
-    # foreach_string()
     foreach_comment_multi()
     foreach_comment_single()
     foreach_string_connect()
