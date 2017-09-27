@@ -245,6 +245,9 @@ def foreach_string():
         string_tag.pop()
 
     for node in NodeIterator():
+        if node.type == NodeType.COMMENT_MULTI or node.type == NodeType.COMMENT_SINGLE:
+            break
+
         if len(string_tag) > 0:
             merge_prev_node(node)
 
@@ -446,11 +449,12 @@ def _lua_format(content,
     content = content.replace('\t', '')
     purge()
     deal_char(content)
-    foreach_string()
+    # foreach_string()
     foreach_comment_multi()
     foreach_comment_single()
     foreach_string_connect()
     foreach_word()
+    foreach_string()
     foreach_operator()
     foreach_separator()
     foreach_equal()

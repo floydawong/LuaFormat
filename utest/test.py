@@ -6,23 +6,30 @@ if os.sys.version.startswith('3'):
 else:
     from core import lua_format
 
+EXAMPLE_PATH = './lua-example'
+
 
 def read_file(path):
     with open(path, 'r') as fp:
         content = fp.read()
         fp.close()
         return content
-
+    return ''
 
 def compare_file(index):
-    src = read_file('./lua-example/%d.lua' % index)
-    target = read_file('./lua-example/target-%d.lua' % index)
-    return lua_format(src) == target
+    src_path = os.path.join(EXAMPLE_PATH, str(index) + '.lua')
+    target_path = os.path.join(EXAMPLE_PATH, 'target-' + str(index) + '.lua')
+    src = read_file(src_path)
+    target = read_file(target_path)
 
+    print('Example %d is %s' % (index, lua_format(src) == target))
 
-def test_example():
-    assert (compare_file(2))
-
+def run(index=1):
+    fname = str(index) + '.lua'
+    fpath = os.path.join(EXAMPLE_PATH, fname)
+    if os.path.exists(fpath):
+        compare_file(index)
+        run(index + 1)
 
 if __name__ == '__main__':
-    test_example()
+    run()
