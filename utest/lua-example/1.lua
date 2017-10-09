@@ -18,3 +18,9 @@ if a>b then end
 if a<b then end
 
 local x='123'..'456'
+
+local HelloWorld = "Hello World"
+local HelloWorld = " Hello World "
+local HelloWorld = "Hello\World"
+local HelloWorld = "Hello+World"
+local HelloWorld = "Hello==World"
