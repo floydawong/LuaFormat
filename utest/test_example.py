@@ -7,7 +7,7 @@ os.sys.path.append(core_directory)
 if sys.version_info < (3, 0):
     from core.LuaFormat import lua_format
 else:
-    from LuaFormat.core.LuaFormat import lua_format
+    from .core.LuaFormat import lua_format
 
 EXAMPLE_PATH = './lua-example'
 
