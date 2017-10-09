@@ -1,10 +1,9 @@
 import os
-os.sys.path.append(os.path.abspath('..'))
 
-if os.sys.version.startswith('3'):
-    from .core import lua_format
-else:
-    from core import lua_format
+core_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..')
+os.sys.path.append(core_directory)
+
+from core import lua_format
 
 EXAMPLE_PATH = './lua-example'
 
