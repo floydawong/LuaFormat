@@ -23,13 +23,14 @@ def compare_file(index):
     target = read_file(target_path)
 
     print('Example %d is %s' % (index, lua_format(src) == target))
+    assert(lua_format(src) == target)
 
-def run(index=1):
+def test_example(index=1):
     fname = str(index) + '.lua'
     fpath = os.path.join(EXAMPLE_PATH, fname)
     if os.path.exists(fpath):
         compare_file(index)
-        run(index + 1)
+        test_example(index + 1)
 
 if __name__ == '__main__':
-    run()
+    test_example()
