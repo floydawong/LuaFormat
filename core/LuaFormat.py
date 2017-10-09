@@ -246,7 +246,7 @@ def foreach_string():
 
     for node in NodeIterator():
         if node.type == NodeType.COMMENT_MULTI or node.type == NodeType.COMMENT_SINGLE:
-            break
+            continue
 
         if len(string_tag) > 0:
             merge_prev_node(node)
