@@ -1,6 +1,8 @@
 # LuaFormat
 > Awesome Lua Format With SublimeText
 
+[![Build Status][travis-image]][travis-link]
+
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENCE)
 
 ## Install
@@ -22,3 +24,7 @@ download zip and unzip to `Sublime Packages Path`
 
 - shortcuts
 `ctrl + alt + f`
+
+
+[travis-image]: https://img.shields.io/travis/FloydaGithub/LuaFormat/master.png
+[travis-link]: https://travis-ci.org/FloydaGithub/LuaFormat
