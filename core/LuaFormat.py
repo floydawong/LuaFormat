@@ -209,6 +209,19 @@ def get_forward_node(node, count):
         node = node.prev
 
 
+def get_forward_type(node):
+    pnode = node.prev
+    if pnode:
+        return pnode.type
+    return None
+
+def get_forward_type_for_negative(node):
+    while True:
+        if node is None: return None
+        if node.type == NodeType.BLANK:
+            node = node.prev
+            continue
+        return node.type
 # ----------------------------------------------------------
 # Format
 # ----------------------------------------------------------
@@ -230,9 +243,16 @@ def deal_char(content):
         if not _node_entry:
             _node_entry = node
         if prev_node:
-            # check scientific notation
+            # scientific notation
+            # 科学计数法
             if c == '-' and str(prev_node)[-1].lower() == 'e' and str(prev_node.prev)[-1] in [str(x) for x in range(10)]:
                 node.type = NodeType.WORD
+
+            # negative number
+            # 负号
+            if c == '-' and get_forward_type_for_negative(prev_node) != NodeType.WORD:
+                node.type = NodeType.WORD
+
             prev_node.next = node
             node.prev = prev_node
         prev_node = node
