@@ -230,6 +230,9 @@ def deal_char(content):
         if not _node_entry:
             _node_entry = node
         if prev_node:
+            # check scientific notation
+            if c == '-' and str(prev_node)[-1].lower() == 'e' and str(prev_node.prev)[-1] in [str(x) for x in range(10)]:
+                node.type = NodeType.WORD
             prev_node.next = node
             node.prev = prev_node
         prev_node = node
