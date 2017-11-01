@@ -215,6 +215,7 @@ def get_forward_type(node):
         return pnode.type
     return None
 
+
 def get_forward_type_for_negative(node):
     while True:
         if node is None: return None
@@ -222,6 +223,8 @@ def get_forward_type_for_negative(node):
             node = node.prev
             continue
         return node.type
+
+
 # ----------------------------------------------------------
 # Format
 # ----------------------------------------------------------
@@ -245,12 +248,14 @@ def deal_char(content):
         if prev_node:
             # scientific notation
             # 科学计数法
-            if c == '-' and str(prev_node)[-1].lower() == 'e' and str(prev_node.prev)[-1] in [str(x) for x in range(10)]:
+            if c == '-' and str(prev_node)[-1].lower() == 'e' and str(
+                    prev_node.prev)[-1] in [str(x) for x in range(10)]:
                 node.type = NodeType.WORD
 
             # negative number
             # 负号
-            if c == '-' and get_forward_type_for_negative(prev_node) != NodeType.WORD:
+            if c == '-' and get_forward_type_for_negative(
+                    prev_node) != NodeType.WORD:
                 node.type = NodeType.WORD
 
             prev_node.next = node
@@ -452,10 +457,10 @@ def purge():
 
 
 def _lua_format(content,
-               tab_size=4,
-               separator_exclude=True,
-               operator_exclude=True,
-               bracket_exclude=False):
+                tab_size=4,
+                separator_exclude=True,
+                operator_exclude=True,
+                bracket_exclude=False):
 
     # init format setting
     global SETTING_TAB_SIZE
@@ -484,6 +489,7 @@ def _lua_format(content,
     foreach_enter()
     foreach_chunk()
 
+
 # return a string by default
 def lua_format(content,
                tab_size=4,
@@ -491,20 +497,23 @@ def lua_format(content,
                operator_exclude=True,
                bracket_exclude=False):
 
-    _lua_format(content, tab_size, separator_exclude, operator_exclude, bracket_exclude)
+    _lua_format(content, tab_size, separator_exclude, operator_exclude,
+                bracket_exclude)
     r = ''
     for line in _lines:
         r += str(line)
     return r
 
+
 # return a list of string for CudeText.
 def lua_format_by_cudatext(content,
-               tab_size=4,
-               separator_exclude=True,
-               operator_exclude=True,
-               bracket_exclude=False):
+                           tab_size=4,
+                           separator_exclude=True,
+                           operator_exclude=True,
+                           bracket_exclude=False):
 
-    _lua_format(content, tab_size, separator_exclude, operator_exclude, bracket_exclude)
+    _lua_format(content, tab_size, separator_exclude, operator_exclude,
+                bracket_exclude)
     r = []
     for line in _lines:
         r.append[line]
