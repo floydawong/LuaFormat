@@ -1,0 +1,6 @@
+LuaFormat v0.0.8
+================
+
+- Fixed Bug:
+    - #6 scientific notation(Ex: 1234e-4)
+    - The separation of minus(Ex: local x = - 1)
