@@ -246,17 +246,18 @@ def deal_char(content):
         if not _node_entry:
             _node_entry = node
         if prev_node:
-            # scientific notation
-            # 科学计数法
-            if c == '-' and str(prev_node)[-1].lower() == 'e' and str(
-                    prev_node.prev)[-1] in [str(x) for x in range(10)]:
-                node.type = NodeType.WORD
+            if c == '-':
+                # negative number
+                # 负号
+                pntype = get_forward_type_for_negative(prev_node)
+                if pntype != NodeType.WORD and pntype != NodeType.REVERSE_BRACKET:
+                    node.type = NodeType.WORD
 
-            # negative number
-            # 负号
-            if c == '-' and get_forward_type_for_negative(
-                    prev_node) != NodeType.WORD:
-                node.type = NodeType.WORD
+                # scientific notation
+                # 科学计数法
+                if str(prev_node)[-1].lower() == 'e' and str(
+                        prev_node.prev)[-1] in [str(x) for x in range(10)]:
+                    node.type = NodeType.WORD
 
             prev_node.next = node
             node.prev = prev_node
