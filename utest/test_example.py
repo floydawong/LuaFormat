@@ -22,8 +22,12 @@ def compare_file(index):
     src = read_file(src_path)
     target = read_file(target_path)
 
-    print('Example %d is %s' % (index, lua_format(src) == target))
-    assert (lua_format(src) == target)
+    format_content = lua_format(src)
+    if format_content == target:
+        print('Example %d is OK' % index)
+    else:
+        print(format_content)
+        assert False
 
 
 def test_example(index=1):

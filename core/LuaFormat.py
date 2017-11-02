@@ -393,59 +393,72 @@ def foreach_word():
             merge_prev_node(node)
 
 
-def foreach_enter():
+def tidy_indent():
+    global line_indent
+    global indent
+    line_indent = 0
     indent = 0
     line = create_line()
-    keywordDict = {}
+    line_key_dict = {}
+    bracket_key_dict = {}
 
     def deal_indent(line, delta=0):
         line.set_indent(indent + delta)
 
+    def inc_indent(delta):
+        global line_indent
+        global indent
+        if line_indent + delta > 1: 
+            return
+        if line_indent + delta < -1: 
+            return
+        line_indent += delta
+        indent += delta
+        if indent < 0:
+            indent = 0
+
     for node in NodeIterator():
         line.add(node)
-        keywordDict[str(node)] = keywordDict.get(str(node), 0)
-        keywordDict[str(node)] += 1
+        key = str(node)
+
+        line_key_dict[key] = line_key_dict.get(key, 0) + 1
+        if node.type is NodeType.BRACKET or node.type is NodeType.REVERSE_BRACKET:
+            bracket_key_dict[key] = bracket_key_dict.get(key, 0) + 1
 
         if node.type is NodeType.ENTER:
-            if keywordDict.get('do') == keywordDict.get('end') == 1:
+            inc_indent(1 if line_key_dict.get('(') > line_key_dict.get(')') else 0)
+            inc_indent(1 if line_key_dict.get('{') > line_key_dict.get('}') else 0)
+            inc_indent(1 if line_key_dict.get('[') > line_key_dict.get(']') else 0)
+
+            if line_key_dict.get('(') < line_key_dict.get(')'):
+                inc_indent(-1)
+                deal_indent(line)
+            if line_key_dict.get('{') < line_key_dict.get('}'):
+                inc_indent(-1)
+                deal_indent(line)
+            if line_key_dict.get('[') < line_key_dict.get(']'):
+                inc_indent(-1)
+                deal_indent(line)
+
+            if line_key_dict.get('do') == line_key_dict.get('end') == 1:
                 indent += 1
                 deal_indent(line)
                 line = create_line()
             else:
                 line = create_line()
                 deal_indent(line)
-            keywordDict = {}
+            line_indent = 0
+            line_key_dict = {}
+
         if str(node) == 'else' or str(node) == 'elseif':
             deal_indent(line, -1)
+
         if str(node) in IndentKeyword:
-            indent += 1
+            inc_indent(1)
+
         if str(node) in UnindentKeyword:
-            indent -= 1
+            inc_indent(-1)
             deal_indent(line)
-
-
-def foreach_chunk():
-    indent = 0
-    delta = 0
-
-    def deal_indent(line):
-        line.add_indent(indent)
-
-    for line in _lines:
-        if delta > 0:
-            indent += 1
-        deal_indent(line)
-        delta = 0
-        for node in line.get_nodes():
-            if node.type is NodeType.BRACKET:
-                delta += 1
-            if node.type is NodeType.REVERSE_BRACKET:
-                delta -= 1
-        if delta < 0:
-            indent -= 2
-            deal_indent(line)
-            indent += 1
-
 
 # ----------------------------------------------------------
 # Main
@@ -476,6 +489,7 @@ def _lua_format(content,
 
     # deal content
     content = content.replace('\t', '')
+    content += '\n'
     purge()
     deal_char(content)
     foreach_comment_multi()
@@ -487,8 +501,7 @@ def _lua_format(content,
     foreach_separator()
     foreach_equal()
     foreach_bracket()
-    foreach_enter()
-    foreach_chunk()
+    tidy_indent()
 
 
 # return a string by default
