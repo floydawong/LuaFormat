@@ -408,9 +408,9 @@ def tidy_indent():
     def inc_indent(delta):
         global line_indent
         global indent
-        if line_indent + delta > 1: 
+        if line_indent + delta > 1:
             return
-        if line_indent + delta < -1: 
+        if line_indent + delta < -1:
             return
         line_indent += delta
         indent += delta
@@ -426,9 +426,12 @@ def tidy_indent():
             bracket_key_dict[key] = bracket_key_dict.get(key, 0) + 1
 
         if node.type is NodeType.ENTER:
-            inc_indent(1 if line_key_dict.get('(') > line_key_dict.get(')') else 0)
-            inc_indent(1 if line_key_dict.get('{') > line_key_dict.get('}') else 0)
-            inc_indent(1 if line_key_dict.get('[') > line_key_dict.get(']') else 0)
+            inc_indent(1 if line_key_dict.get('(') > line_key_dict.get(')')
+                       else 0)
+            inc_indent(1 if line_key_dict.get('{') > line_key_dict.get('}')
+                       else 0)
+            inc_indent(1 if line_key_dict.get('[') > line_key_dict.get(']')
+                       else 0)
 
             if line_key_dict.get('(') < line_key_dict.get(')'):
                 inc_indent(-1)
@@ -459,6 +462,7 @@ def tidy_indent():
         if str(node) in UnindentKeyword:
             inc_indent(-1)
             deal_indent(line)
+
 
 # ----------------------------------------------------------
 # Main
