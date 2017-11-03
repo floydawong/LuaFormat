@@ -426,20 +426,20 @@ def tidy_indent():
             bracket_key_dict[key] = bracket_key_dict.get(key, 0) + 1
 
         if node.type is NodeType.ENTER:
-            inc_indent(1 if line_key_dict.get('(') > line_key_dict.get(')')
+            inc_indent(1 if line_key_dict.get('(', 0) > line_key_dict.get(')', 0)
                        else 0)
-            inc_indent(1 if line_key_dict.get('{') > line_key_dict.get('}')
+            inc_indent(1 if line_key_dict.get('{', 0) > line_key_dict.get('}', 0)
                        else 0)
-            inc_indent(1 if line_key_dict.get('[') > line_key_dict.get(']')
+            inc_indent(1 if line_key_dict.get('[', 0) > line_key_dict.get(']', 0)
                        else 0)
 
-            if line_key_dict.get('(') < line_key_dict.get(')'):
+            if line_key_dict.get('(', 0) < line_key_dict.get(')', 0):
                 inc_indent(-1)
                 deal_indent(line)
-            if line_key_dict.get('{') < line_key_dict.get('}'):
+            if line_key_dict.get('{', 0) < line_key_dict.get('}', 0):
                 inc_indent(-1)
                 deal_indent(line)
-            if line_key_dict.get('[') < line_key_dict.get(']'):
+            if line_key_dict.get('[', 0) < line_key_dict.get(']', 0):
                 inc_indent(-1)
                 deal_indent(line)
 
