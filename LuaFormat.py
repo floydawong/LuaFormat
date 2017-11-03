@@ -3,6 +3,7 @@ import sublime_plugin
 import sys
 import os
 
+
 def reload(name):
     rubbish_pool = []
     for key in sys.modules:
@@ -10,6 +11,8 @@ def reload(name):
             rubbish_pool.append(key)
     for key in rubbish_pool:
         del sys.modules[key]
+
+
 reload('LuaFormat.core')
 
 if sublime.version().startswith('3'):
