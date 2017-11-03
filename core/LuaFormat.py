@@ -520,6 +520,7 @@ def lua_format(content,
     r = ''
     for line in _lines:
         r += str(line)
+    r = r[:-1]        
     return r
 
 
