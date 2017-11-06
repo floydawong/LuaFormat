@@ -285,9 +285,10 @@ def foreach_node():
 
         # Check Comment Single Finish
         elif current_type == NodeType.COMMENT_SINGLE:
-            merge_prev_node(node)
             if node.type == NodeType.ENTER:
                 current_type = None
+            else:
+                merge_prev_node(node)
 
         # Check Comment Multi Finish
         elif node.type == NodeType.COMMENT_MULTI:
