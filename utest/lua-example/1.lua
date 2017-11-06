@@ -10,6 +10,8 @@ local x={1,2,3,4}
 local x=1+2-3*4/5^6%7
 
 -- equal
+local a=1
+local b=2
 if a==b then end
 if a~=b then end
 if a>=b then end

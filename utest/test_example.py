@@ -16,27 +16,38 @@ def read_file(path):
     return ''
 
 
-def compare_file(index):
+def compare_file(index, isDebug=False):
     src_path = os.path.join(EXAMPLE_PATH, str(index) + '.lua')
     target_path = os.path.join(EXAMPLE_PATH, 'target-' + str(index) + '.lua')
     src = read_file(src_path)
     target = read_file(target_path)
 
     format_content = lua_format(src)
-    if format_content == target:
-        print('Example %d is OK' % index)
+    if isDebug:
+        assert format_content == target
     else:
-        print(format_content)
-        # assert False
+        if format_content == target:
+            print('Example %d is OK' % index)
+        else:
+            print(format_content)
 
 
-def test_example(index=1):
+def test_all_example(index=1):
+    fname = str(index) + '.lua'
+    fpath = os.path.join(EXAMPLE_PATH, fname)
+    if os.path.exists(fpath):
+        compare_file(index, True)
+        test_all_example(index + 1)
+
+
+def debug_all_example(index=1):
     fname = str(index) + '.lua'
     fpath = os.path.join(EXAMPLE_PATH, fname)
     if os.path.exists(fpath):
         compare_file(index)
-        test_example(index + 1)
+        debug_all_example(index + 1)
 
 
 if __name__ == '__main__':
-    test_example()
+    test_all_example()
+    debug_all_example(1)

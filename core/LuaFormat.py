@@ -228,23 +228,22 @@ def get_forward_type_for_negative(node):
 # ----------------------------------------------------------
 # Format
 # ----------------------------------------------------------
-def deal_char(content):
+def _get_char_type(c):
+    for i in range(len(NodePattern)):
+        pattern = NodePattern[i]
+        if c in pattern:
+            return i
+    return NodeType.WORD
+
+
+def foreach_char(content):
     global _node_entry
     prev_node = None
 
     for c in content:
-        ctype = 0
-        for i in range(len(NodePattern)):
-            pattern = NodePattern[i]
-            if c in pattern:
-                ctype = i
-                break
-        else:
-            ctype = NodeType.WORD
-
+        ctype = _get_char_type(c)
         node = create_node(c, ctype)
-        if not _node_entry:
-            _node_entry = node
+
         if prev_node:
             if c == '-':
                 # negative number
@@ -261,37 +260,55 @@ def deal_char(content):
 
             prev_node.next = node
             node.prev = prev_node
+        else:
+            _node_entry = node
+
         prev_node = node
 
 
-def foreach_string():
-    string_tag = []
-
-    def create_tag(node):
-        string_tag.append(str(node))
-
-    def remove_tag():
-        string_tag.pop()
+def foreach_node():
+    current_type = None
+    string_key = ''
 
     for node in NodeIterator():
-        if node.type == NodeType.COMMENT_MULTI or node.type == NodeType.COMMENT_SINGLE:
-            continue
+        char = str(node)
 
-        if len(string_tag) > 0:
+        # Check String Finish
+        if current_type == NodeType.STRING:
             merge_prev_node(node)
+            if string_key == char:
+                current_type = None
+                string_key = ''
+            elif get_forward_node(node, 2) == ']]' and string_key == '[':
+                current_type = None
+                string_key = ''
 
-        if str(node) in NodePattern[NodeType.STRING]:
-            current_tag = string_tag[-1:]
-            while True:
-                if len(current_tag) == 0:
-                    create_tag(node)
-                    break
-                current_tag = current_tag[0]
-                if current_tag == str(node):
-                    remove_tag()
-                    break
-                create_tag(node)
-                break
+        # Check Comment Single Finish
+        elif current_type == NodeType.COMMENT_SINGLE:
+            merge_prev_node(node)
+            if node.type == NodeType.ENTER:
+                current_type = None
+
+        # Check Comment Multi Finish
+        elif node.type == NodeType.COMMENT_MULTI:
+            merge_prev_node(node)  # Debug
+            if get_forward_node(node, 2) == ']]':
+                current_type = None
+
+        # Check String Or Comment Begin.
+        elif current_type == None:
+            if node.type == NodeType.STRING:
+                current_type = NodeType.STRING
+                string_key = char
+            elif char == '-' and str(node.prev) == '-':
+                current_type = NodeType.COMMENT_SINGLE
+                node = merge_prev_node(node)
+                node.type = NodeType.COMMENT_SINGLE
+            elif get_forward_node(node, 4) == '--[[':
+                current_type = NodeType.COMMENT_MULTI
+            elif get_forward_node(node, 2) == '[[':
+                current_type = NodeType.STRING
+                string_key = char
 
 
 def foreach_string_connect():
@@ -301,44 +318,6 @@ def foreach_string_connect():
         str(node.next) != '.' :
             node = merge_prev_node(node)
             node.type = NodeType.OPERATOR
-
-
-def foreach_comment_multi():
-    comment_flag = False
-    for node in NodeIterator():
-        if comment_flag == True and get_forward_node(node, 2) == ']]':
-            comment_flag = False
-            merge_prev_node(node)
-
-        if comment_flag:
-            merge_prev_node(node)
-
-        if get_forward_node(node, 4) == '--[[':
-            comment_flag = True
-            node = merge_prev_node(node)
-            node = merge_prev_node(node)
-            node = merge_prev_node(node)
-            node.type = NodeType.COMMENT_MULTI
-
-
-def foreach_comment_single():
-    comment_flag = False
-    for node in NodeIterator():
-        if node.type == NodeType.ENTER and comment_flag == True:
-            comment_flag = False
-
-        if comment_flag:
-            merge_prev_node(node)
-
-        if node.prev != None and \
-         node.prev.type != NodeType.COMMENT_SINGLE and \
-         node.type != NodeType.COMMENT_MULTI and \
-         get_forward_node(node, 2) == '--' :
-
-            comment_flag = True
-            node = merge_prev_node(node)
-            node.type = NodeType.COMMENT_SINGLE
-            string_forward_blank(node)
 
 
 def foreach_operator():
@@ -495,12 +474,11 @@ def _lua_format(content,
     content = content.replace('\t', '')
     content += '\n'
     purge()
-    deal_char(content)
-    foreach_comment_multi()
-    foreach_comment_single()
+
+    foreach_char(content)
+    foreach_node()
     foreach_string_connect()
     foreach_word()
-    foreach_string()
     foreach_operator()
     foreach_separator()
     foreach_equal()
