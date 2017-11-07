@@ -27,7 +27,7 @@
                                 "caption": "Key Bindings – User",
                                 "command": "edit_settings", "args":
                                 {
-                                    "base_file": "${packages}/LuaFormat/LuaFormat.sublime-keymap",
+                                    "base_file": "${packages}/LuaFormat/Default (${platform}).sublime-keymap",
                                     "default": "[\n\t{ \"keys\": [\"$0\"], \"command\": \"lua_format\" }\n]\n"
                                 }
                             }
