@@ -1,5 +1,5 @@
 # LuaFormat
-> Awesome Lua Format With SublimeText
+> Lua Format Plugin For Sublime Text
 
 [![GitHub version][version-image]][version-link]
 [![Build Status][travis-image]][travis-link]
@@ -23,8 +23,16 @@ download zip and unzip to `Sublime Packages Path`
 
 ## Usage
 
-- shortcuts
-`ctrl + alt + f`
+- Settings
+    - Preferences -> Package Settings -> LuaFormat -> `Settings - User`
+    - `Ctrl + Shift + P` -> `LuaFormat: Settings`
+
+- Key Bindings
+    - Preferences -> Package Settings -> LuaFormat -> `Key Bindings - User`
+    - `Ctrl + Shift + P` -> `LuaFormat: Key Bindings`
+
+- Shortcuts
+    - `Ctrl + Alt + F`
 
 
 [version-image]: https://badge.fury.io/gh/floydagithub%2Fluaformat.svg

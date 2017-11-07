@@ -1,6 +1,21 @@
-Hi, Welcome to use LuaFormat. It is a development of the plugin.
-So, you can contribution code via github or submit bugs to the issue.
+# Lua Format
 
-https://github.com/FloydaGithub/LuaFormat
+Thanks for installing LuaFormat!!!
 
-Thank you!
+
+The current file suffix is '.lua', or syntax format is lua, this package can be run.
+In the settings file, `auto_format_on_save` is true. It can be automatic formatting when saving (also advised to do so).
+
+
+## Usage
+
+- Settings
+    - Preferences -> Package Settings -> LuaFormat -> Settings - User
+    - Ctrl + Shift + P -> LuaFormat: Settings
+
+- Key Bindings
+    - Preferences -> Package Settings -> LuaFormat -> Key Bindings - User
+    - Ctrl + Shift + P -> LuaFormat: Key Bindings
+
+- Shortcuts
+    - Ctrl + Alt + F
