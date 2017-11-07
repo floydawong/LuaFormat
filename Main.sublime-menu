@@ -16,14 +16,20 @@
                         "children":
                         [
                             {
-                                "command": "open_file",
-                                "args": {"file": "${packages}/LuaFormat/Default.sublime-settings"},
-                                "caption": "Settings – Default"
+                                "caption": "Settings – User",
+                                "command": "edit_settings", "args":
+                                {
+                                    "base_file": "${packages}/LuaFormat/LuaFormat.sublime-settings",
+                                    "default": "{\n\t\"tab_size\": 4,\n\t\"special_symbol_split\": true,\n\t\"bracket_split\": false,\n\t\"auto_format_on_save\": true\n}\n"
+                                }
                             },
                             {
-                                "command": "open_file",
-                                "args": {"file": "${packages}/User/LuaFormat.sublime-settings"},
-                                "caption": "Settings – User"
+                                "caption": "Key Bindings – User",
+                                "command": "edit_settings", "args":
+                                {
+                                    "base_file": "${packages}/LuaFormat/LuaFormat.sublime-keymap",
+                                    "default": "[\n\t{ \"keys\": [\"$0\"], \"command\": \"lua_format\" }\n]\n"
+                                }
                             }
                         ]
                     }

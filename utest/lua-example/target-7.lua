@@ -24,15 +24,15 @@ for i = 1, 10 do
     print(content)
 end]]print('test')
 
-print('test')   -- for i = 1, 10 do
-print('test')   --     print("He's age is", i)
-print('test')   --     print(content)
-print('test')   -- end
+print('test') -- for i = 1, 10 do
+print('test') --     print("He's age is", i)
+print('test') --     print(content)
+print('test') -- end
 
-print('test')   -- for i = 1, 10 do
-print('test')       -- print("He's age is", i)
-print('test')       -- print(content)
-print('test')   -- end
+print('test') -- for i = 1, 10 do
+print('test') -- print("He's age is", i)
+print('test') -- print(content)
+print('test') -- end
 
 -- restore i-th element
 -- restore i - th element
