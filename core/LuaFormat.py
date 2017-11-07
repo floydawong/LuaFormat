@@ -2,14 +2,7 @@
 
 _node_entry = None
 _lines = []
-
-# ----------------------------------------------------------
-# Setting
-# ----------------------------------------------------------
-SETTING_TAB_SIZE = 4
-SETTING_SEPARATOR_EXCLUDE = True
-SETTING_OPERATOR_EXCLUDE = True
-SETTING_BRACKET_EXCLUDE = False
+_setting = {}
 
 
 # ----------------------------------------------------------
@@ -70,7 +63,7 @@ class Line():
         r = ''
         for node in self._nodes:
             r += str(node)
-        return ' ' * SETTING_TAB_SIZE * self._indent + r.strip(' ')
+        return ' ' * _settings.get('tab_size') * self._indent + r.strip(' ')
 
     def add(self, node):
         self._nodes.append(node)
@@ -324,7 +317,7 @@ def foreach_string_connect():
 def foreach_operator():
     for node in NodeIterator():
         if node.type == NodeType.OPERATOR:
-            if SETTING_OPERATOR_EXCLUDE:
+            if _settings.get('special_symbol_split'):
                 if node.prev.type is not NodeType.BLANK:
                     insert_blank_node(node)
                 if node.next.type is not NodeType.BLANK:
@@ -334,7 +327,7 @@ def foreach_operator():
 def foreach_separator():
     for node in NodeIterator():
         if node.type == NodeType.SEPARATOR:
-            if SETTING_SEPARATOR_EXCLUDE:
+            if _settings.get('special_symbol_split'):
                 if node.next.type is not NodeType.BLANK:
                     insert_blank_node(node.next)
 
@@ -347,7 +340,7 @@ def foreach_equal():
 
     for node in NodeIterator():
         if node.type == NodeType.EQUAL:
-            if SETTING_OPERATOR_EXCLUDE:
+            if _settings.get('special_symbol_split'):
                 if node.prev.type is not NodeType.BLANK:
                     insert_blank_node(node)
                 if node.next.type is not NodeType.BLANK:
@@ -356,7 +349,7 @@ def foreach_equal():
 
 def foreach_bracket():
     for node in NodeIterator():
-        if SETTING_BRACKET_EXCLUDE:
+        if _settings.get('bracket_split'):
             if node.type == NodeType.BRACKET:
                 if not node.next.type in [
                         NodeType.BLANK, NodeType.REVERSE_BRACKET
@@ -450,52 +443,37 @@ def tidy_indent():
 def purge():
     global _node_entry
     global _lines
+    global _settings
     _node_entry = None
     _lines = []
+    _settings = {}
 
 
-def _lua_format(content,
-                tab_size=4,
-                separator_exclude=True,
-                operator_exclude=True,
-                bracket_exclude=False):
-
-    # init format setting
-    global SETTING_TAB_SIZE
-    global SETTING_SEPARATOR_EXCLUDE
-    global SETTING_OPERATOR_EXCLUDE
-    global SETTING_BRACKET_EXCLUDE
-
-    SETTING_TAB_SIZE = tab_size
-    SETTING_SEPARATOR_EXCLUDE = separator_exclude
-    SETTING_OPERATOR_EXCLUDE = operator_exclude
-    SETTING_BRACKET_EXCLUDE = bracket_exclude
+def _lua_format(content, setting=None):
+    purge()
+    global _settings
+    _settings = setting
 
     # deal content
     content = content.replace('\t', '')
     content += '\n'
-    purge()
 
     foreach_char(content)
     foreach_node()
+
     foreach_string_connect()
     foreach_word()
     foreach_operator()
     foreach_separator()
     foreach_equal()
     foreach_bracket()
+
     tidy_indent()
 
 
-# return a string by default
-def lua_format(content,
-               tab_size=4,
-               separator_exclude=True,
-               operator_exclude=True,
-               bracket_exclude=False):
-
-    _lua_format(content, tab_size, separator_exclude, operator_exclude,
-                bracket_exclude)
+# return a string
+def lua_format(content, settings):
+    _lua_format(content, settings)
     r = ''
     for line in _lines:
         r += str(line)
@@ -509,9 +487,13 @@ def lua_format_by_cudatext(content,
                            separator_exclude=True,
                            operator_exclude=True,
                            bracket_exclude=False):
+    settings = {}
+    settings['tab_size'] = tab_size
+    settings['special_symbol_split'] = separator_exclude
+    settings['bracket_split'] = bracket_exclude
 
-    _lua_format(content, tab_size, separator_exclude, operator_exclude,
-                bracket_exclude)
+    _lua_format(content, settings)
+
     r = []
     for line in _lines:
         r.append[line]

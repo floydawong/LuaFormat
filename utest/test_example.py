@@ -1,4 +1,5 @@
 import os
+import json
 
 core_directory = os.path.join(
     os.path.dirname(os.path.realpath(__file__)), '..')
@@ -22,7 +23,14 @@ def compare_file(index, isDebug=False):
     src = read_file(src_path)
     target = read_file(target_path)
 
-    format_content = lua_format(src)
+    with open('../LuaFormat.sublime-settings') as fp:
+        s = ''
+        for line in fp.readlines():
+            if not '//' in line:
+                s += line
+        settings = json.loads(s)
+
+    format_content = lua_format(src, settings)
     if isDebug:
         assert format_content == target
     else:
