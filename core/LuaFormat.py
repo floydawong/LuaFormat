@@ -311,6 +311,12 @@ def foreach_node():
                 string_key = '[['
 
 
+def foreach_blank():
+    for node in NodeIterator():
+        if node.prev and node.type == node.prev.type == NodeType.BLANK:
+            merge_prev_node(node)
+
+
 def foreach_string_connect():
     for node in NodeIterator():
         if get_forward_char(node, 2) == '..' and \
@@ -467,6 +473,7 @@ def _lua_format(content, setting=None):
     foreach_char(content)
     foreach_node()
 
+    foreach_blank()
     foreach_string_connect()
     foreach_word()
     foreach_operator()
