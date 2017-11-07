@@ -193,7 +193,7 @@ def string_forward_blank(node):
         node.type = NodeType.COMMENT_SINGLE
 
 
-def get_forward_node(node, count):
+def get_forward_char(node, count):
     r = ''
     while True:
         if not node: return r[::-1]
@@ -221,7 +221,7 @@ def get_forward_type_for_negative(node):
 # ----------------------------------------------------------
 # Format
 # ----------------------------------------------------------
-def _get_char_type(c):
+def get_char_type(c):
     for i in range(len(NodePattern)):
         pattern = NodePattern[i]
         if c in pattern:
@@ -234,7 +234,7 @@ def foreach_char(content):
     prev_node = None
 
     for c in content:
-        ctype = _get_char_type(c)
+        ctype = get_char_type(c)
         node = create_node(c, ctype)
 
         if prev_node:
@@ -272,7 +272,7 @@ def foreach_node():
             if string_key == char:
                 current_type = None
                 string_key = ''
-            elif get_forward_node(node, 2) == ']]' and string_key == '[':
+            elif get_forward_char(node, 2) == ']]' and string_key == '[[':
                 current_type = None
                 string_key = ''
 
@@ -280,35 +280,41 @@ def foreach_node():
         elif current_type == NodeType.COMMENT_SINGLE:
             if node.type == NodeType.ENTER:
                 current_type = None
+                string_key = ''
+            elif get_forward_char(node, 4) == '--[[':
+                current_type = NodeType.COMMENT_MULTI
+                string_key = ''
+                node = merge_prev_node(node)
+                node.type = NodeType.COMMENT_MULTI
             else:
                 merge_prev_node(node)
 
         # Check Comment Multi Finish
-        elif node.type == NodeType.COMMENT_MULTI:
-            merge_prev_node(node)  # Debug
-            if get_forward_node(node, 2) == ']]':
+        elif current_type == NodeType.COMMENT_MULTI:
+            node = merge_prev_node(node)
+            if get_forward_char(node, 2) == ']]':
                 current_type = None
+                string_key = ''
 
         # Check String Or Comment Begin.
         elif current_type == None:
             if node.type == NodeType.STRING:
                 current_type = NodeType.STRING
                 string_key = char
-            elif char == '-' and str(node.prev) == '-':
+            elif get_forward_char(node, 2) == '--':
                 current_type = NodeType.COMMENT_SINGLE
+                string_key = ''
                 node = merge_prev_node(node)
                 node.type = NodeType.COMMENT_SINGLE
-            elif get_forward_node(node, 4) == '--[[':
-                current_type = NodeType.COMMENT_MULTI
-            elif get_forward_node(node, 2) == '[[':
+            elif get_forward_char(node, 2) == '[[':
                 current_type = NodeType.STRING
-                string_key = char
+                string_key = '[['
 
 
 def foreach_string_connect():
     for node in NodeIterator():
-        if get_forward_node(node, 2) == '..' and \
-        get_forward_node(node, 3) != '...' and \
+        if get_forward_char(node, 2) == '..' and \
+        get_forward_char(node, 3) != '...' and \
         str(node.next) != '.' :
             node = merge_prev_node(node)
             node.type = NodeType.OPERATOR
