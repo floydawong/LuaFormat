@@ -183,14 +183,32 @@ def merge_prev_node(node):
     return lnode
 
 
-def string_forward_blank(node):
+def delete_node(node):
+    if node.prev and node.next:
+        node.prev.next = node.next
+        node.next.prev = node.prev
+    elif node.next == None:
+        node.prev.next = None
+    elif node.prev == None:
+        node.next.prev = None
+    return node.next
+
+
+def delete_forward_blank(node):
     while True:
-        if node.prev == None or node.prev.type == NodeType.ENTER:
+        if node and node.type == NodeType.BLANK:
+            node = delete_node(node)
+        else:
             return
-        if node.prev.type != NodeType.BLANK:
+        node = node.prev
+
+
+def delete_backward_blank(node):
+    while True:
+        if node and node.type == NodeType.BLANK:
+            node = delete_node(node)
+        else:
             return
-        node = merge_prev_node(node)
-        node.type = NodeType.COMMENT_SINGLE
 
 
 def get_forward_char(node, count):
@@ -339,6 +357,8 @@ def foreach_operator():
 def foreach_separator():
     for node in NodeIterator():
         if node.type == NodeType.SEPARATOR:
+            delete_forward_blank(node.prev)
+            delete_backward_blank(node.next)
             if _settings.get('special_symbol_split'):
                 if node.next.type is not NodeType.BLANK:
                     insert_blank_node(node.next)
@@ -352,6 +372,8 @@ def foreach_equal():
 
     for node in NodeIterator():
         if node.type == NodeType.EQUAL:
+            delete_forward_blank(node.prev)
+            delete_backward_blank(node.next)
             if _settings.get('special_symbol_split'):
                 if node.prev.type is not NodeType.BLANK:
                     insert_blank_node(node)
@@ -361,15 +383,18 @@ def foreach_equal():
 
 def foreach_bracket():
     for node in NodeIterator():
-        if _settings.get('bracket_split'):
-            if node.type == NodeType.BRACKET:
-                if not node.next.type in [
-                        NodeType.BLANK, NodeType.REVERSE_BRACKET
-                ]:
-                    insert_blank_node(node.next)
-            if node.type == NodeType.REVERSE_BRACKET:
-                if not node.prev.type in [NodeType.BLANK, NodeType.BRACKET]:
-                    insert_blank_node(node)
+        if node.type == NodeType.BRACKET:
+            delete_backward_blank(node.next)
+            if _settings.get('bracket_split'):
+                insert_blank_node(node.next)
+
+        if node.type == NodeType.REVERSE_BRACKET:
+            delete_forward_blank(node.prev)
+            if _settings.get('bracket_split'):
+                insert_blank_node(node)
+
+
+
 
 
 def foreach_word():
