@@ -1,0 +1,11 @@
+0.1.0
+=====
+
+The basic functionality has been done.
+
+- automatic indentation
+- separation of special characters
+- tab size via settings
+- main menu(Settings/Key Bindings)
+- commands via `ctrl + shift + p`
+- utest module
