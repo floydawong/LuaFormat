@@ -16,7 +16,7 @@ class "BaseClass" (function(_ENV)
     ----------------- Constructor ----------------
     ----------------------------------------------    
     
-    __DebugArguments__{ --[[Type]] }
+    __DebugArguments__{--[[Type]]}
     function BaseClass(self, ...) 
     end
     
@@ -26,7 +26,7 @@ class "BaseClass" (function(_ENV)
     
     --虚方法，约定重写的标记virtual
     --[[virtual]]
-    __DebugArguments__{ --[[Type]] }
+    __DebugArguments__{--[[Type]]}
     function VirtualFuctionName(self, ...)
         -- body
     end

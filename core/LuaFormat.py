@@ -386,15 +386,14 @@ def foreach_bracket():
         if node.type == NodeType.BRACKET:
             delete_backward_blank(node.next)
             if _settings.get('bracket_split'):
-                insert_blank_node(node.next)
+                if node.next.type != NodeType.BRACKET:
+                    insert_blank_node(node.next)
 
         if node.type == NodeType.REVERSE_BRACKET:
             delete_forward_blank(node.prev)
             if _settings.get('bracket_split'):
-                insert_blank_node(node)
-
-
-
+                if node.prev.type != NodeType.REVERSE_BRACKET:
+                    insert_blank_node(node)
 
 
 def foreach_word():
