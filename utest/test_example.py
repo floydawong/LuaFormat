@@ -55,7 +55,15 @@ def debug_all_example(index=1):
         compare_file(index)
         debug_all_example(index + 1)
 
+def debug_example(index=1):
+    fname = str(index) + '.lua'
+    fpath = os.path.join(EXAMPLE_PATH, fname)
+    if os.path.exists(fpath):
+        compare_file(index)
+
 
 if __name__ == '__main__':
-    test_all_example()
-    debug_all_example()
+    # test_all_example()
+    # debug_all_example()
+    debug_example()
+
