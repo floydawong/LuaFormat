@@ -26,7 +26,7 @@ NodePattern = {
     NodeType.WORD: [],
     NodeType.BLANK: [' '],
     NodeType.OPERATOR: ['+', '-', '*', '/', '^', '%'],
-    NodeType.SEPARATOR: [','],
+    NodeType.SEPARATOR: [',', ';'],
     NodeType.EQUAL: ['=', '~', '>', '<'],
     NodeType.BRACKET: ['(', '{', '['],
     NodeType.REVERSE_BRACKET: [')', '}', ']'],
