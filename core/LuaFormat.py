@@ -452,7 +452,7 @@ def tidy_indent():
                 inc_indent(-1)
                 deal_indent(line)
 
-            if line_key_dict.get('do') == line_key_dict.get('end') == 1:
+            if line_key_dict.get('do', 0) > 0 and line_key_dict.get('do', 0) == line_key_dict.get('end', 0):
                 indent += 1
                 deal_indent(line)
                 line = create_line()
@@ -535,3 +535,31 @@ def lua_format_by_cudatext(content,
     for line in _lines:
         r.append[line]
     return r
+
+
+# ----------------------------------------------------------
+# debug
+# ----------------------------------------------------------
+
+debug_content = """
+function foo() print('foo') end
+for i = 1, 10 do print i end
+if 2 > 1 then print('True') end
+
+function  foo(a,  b)
+    if  a  >  b  then  do  return  a  end  end
+        do  return  b  end
+end
+"""
+
+def debug():
+    settings = {}
+    settings['tab_size'] = 4
+    settings['special_symbol_split'] = True
+    settings['bracket_split'] = False
+    print(lua_format(debug_content, settings))
+
+
+
+if __name__ == '__main__':
+    debug()
