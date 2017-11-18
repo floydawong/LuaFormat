@@ -40,6 +40,7 @@ class LuaFormatCommand(sublime_plugin.TextCommand):
         row, col = self.view.rowcol(selection)
 
         # replace the content after format
+        print("Run Lua Format")
         self.view.replace(edit, region, lua_format(content, get_settings()))
 
         # deal cursor position
