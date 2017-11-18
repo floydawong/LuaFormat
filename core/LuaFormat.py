@@ -38,7 +38,9 @@ NodePattern = {
     'COMMENT_MULTI': [],
 }
 
-SingletonType = [NodeType.BRACKET,NodeType.REVERSE_BRACKET, NodeType.STRING, NodeType.BLANK]
+SingletonType = [
+    NodeType.BRACKET, NodeType.REVERSE_BRACKET, NodeType.STRING, NodeType.BLANK
+]
 
 CommentType = [
     NodeType.STRING, NodeType.COMMENT_SINGLE, NodeType.COMMENT_MULTI
@@ -262,12 +264,14 @@ def get_forward_type_for_negative(node):
 def split_content(content, count=1):
     return content[:count], content[count:]
 
+
 def get_char_type(c):
     for key in NodePattern:
         pattern = NodePattern[key]
         if c in pattern:
             return key
     return NodeType.WORD
+
 
 def parse_node(content):
     node = None
@@ -288,8 +292,9 @@ def parse_node(content):
 
             # scientific notation
             # 科学计数法
-            if str(node)[-1].lower() == 'e' and str(
-                    node)[-2] in [str(x) for x in range(10)]:
+            if str(node)[-1].lower() == 'e' and str(node)[-2] in [
+                    str(x) for x in range(10)
+            ]:
                 node.add(c)
                 continue
 
@@ -395,7 +400,8 @@ def new_foreach_node():
                 if not node.next:
                     break
         str_node = str(node)
-        if str_node == len(str_node) * '=' and str(node.last) == '[' and str(node.next) == '[':
+        if str_node == len(str_node) * '=' and str(node.last) == '[' and str(
+                node.next) == '[':
             end_flag = ']%s]' % (len(str_node) * '=')
             while True:
                 node = node.next
@@ -576,7 +582,8 @@ def tidy_indent():
                 inc_indent(-1)
                 deal_indent(line)
 
-            if line_key_dict.get('do', 0) > 0 and line_key_dict.get('do', 0) == line_key_dict.get('end', 0):
+            if line_key_dict.get('do', 0) > 0 and line_key_dict.get(
+                    'do', 0) == line_key_dict.get('end', 0):
                 indent += 1
                 deal_indent(line)
                 line = create_line()
@@ -678,13 +685,13 @@ class "BaseClass" (function(_ENV)
 end)
 """
 
+
 def debug():
     settings = {}
     settings['tab_size'] = 4
     settings['special_symbol_split'] = True
     settings['bracket_split'] = False
     print(lua_format(debug_content, settings))
-
 
 
 if __name__ == '__main__':
