@@ -1,0 +1,35 @@
+# Change Log
+
+
+## 0.1.1
+- Fixed #12
+- Fixed `--[=[comment]=]` can not recognized as comment.
+- Fixed `[=[string]=]` can not recognized as string.
+- Fixed the indentation error `do .. end` after `if then` or `for do`.
+
+
+## 0.1.0
+> The basic functionality has been done.
+- Automatic indentation
+- Separation of special characters
+- Tab size via settings
+- Main menu(Settings/Key Bindings)
+- Commands via `ctrl + shift + p`
+- Utest module
+
+
+## 0.0.12
+- Fixed strings and comment priority bugs.
+- Fixed nested bugs in string.
+- Fixed the Bug for comment movement.
+
+
+## 0.0.8
+- Fixed #6: scientific notation(Ex: 1234e-4)
+- The separation of minus(Ex: local x = - 1)
+
+
+## 0.0.4
+- Added default setting.
+- Whether to run `Lua Format`, set `auto_format_on_save` in settings.
+- Set the format of the symbols in the Settings.
