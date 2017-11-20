@@ -64,6 +64,4 @@ def debug_example(index=1):
 
 
 if __name__ == '__main__':
-    # test_all_example()
     debug_all_example()
-    # debug_example()

@@ -52,6 +52,7 @@ IndentKeyword = [
     'repeat',
     'while',
     'if',
+    'do',
 ]
 
 UnindentKeyword = ['end', 'until']
@@ -524,6 +525,8 @@ def foreach_bracket():
             if _settings.get('bracket_split'):
                 if node.last.type != NodeType.REVERSE_BRACKET:
                     insert_blank_node(node)
+            if node.last and node.last.last and node.last.type == NodeType.ENTER and node.last.last.type == NodeType.REVERSE_BRACKET:
+                delete_node(node.last)
 
 
 def foreach_word():
@@ -582,9 +585,11 @@ def tidy_indent():
                 inc_indent(-1)
                 deal_indent(line)
 
-            if line_key_dict.get('do', 0) > 0 and line_key_dict.get(
-                    'do', 0) == line_key_dict.get('end', 0):
-                indent += 1
+            do_count = line_key_dict.get('do', 0)
+            end_count = line_key_dict.get('end', 0)
+
+            if do_count > 0 and do_count <= end_count:
+                indent += end_count - do_count
                 deal_indent(line)
                 line = create_line()
             else:
