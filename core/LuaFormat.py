@@ -479,9 +479,9 @@ def foreach_operator():
     for node in NodeIterator():
         if node.type == NodeType.OPERATOR:
             if _settings.get('special_symbol_split'):
-                if node.last.type is not NodeType.BLANK:
+                if node.last and node.last.type is not NodeType.BLANK:
                     insert_blank_node(node)
-                if node.next.type is not NodeType.BLANK:
+                if node.next and node.next.type is not NodeType.BLANK:
                     insert_blank_node(node.next)
 
 
@@ -491,7 +491,7 @@ def foreach_separator():
             delete_forward_blank(node.last)
             delete_backward_blank(node.next)
             if _settings.get('special_symbol_split'):
-                if node.next.type is not NodeType.BLANK:
+                if node.next and node.next.type is not NodeType.BLANK:
                     insert_blank_node(node.next)
 
 
@@ -506,9 +506,9 @@ def foreach_equal():
             delete_forward_blank(node.last)
             delete_backward_blank(node.next)
             if _settings.get('special_symbol_split'):
-                if node.last.type is not NodeType.BLANK:
+                if node.last and node.last.type is not NodeType.BLANK:
                     insert_blank_node(node)
-                if node.next.type is not NodeType.BLANK:
+                if node.next and node.next.type is not NodeType.BLANK:
                     insert_blank_node(node.next)
 
 
@@ -517,13 +517,13 @@ def foreach_bracket():
         if node.type == NodeType.BRACKET:
             delete_backward_blank(node.next)
             if _settings.get('bracket_split'):
-                if node.next.type != NodeType.BRACKET:
+                if node.next and node.next.type != NodeType.BRACKET:
                     insert_blank_node(node.next)
 
         if node.type == NodeType.REVERSE_BRACKET:
             delete_forward_blank(node.last)
             if _settings.get('bracket_split'):
-                if node.last.type != NodeType.REVERSE_BRACKET:
+                if node.last and node.last.type != NodeType.REVERSE_BRACKET:
                     insert_blank_node(node)
             if node.last and node.last.last and node.last.type == NodeType.ENTER and node.last.last.type == NodeType.REVERSE_BRACKET:
                 delete_node(node.last)
@@ -682,12 +682,8 @@ def lua_format_by_cudatext(content,
 # debug
 # ----------------------------------------------------------
 
-debug_content = """
-class "BaseClass" (function(_ENV)
-    __DebugArguments__{--[[Type]]}
-    function BaseClass(self, ...)
-    end
-end)
+debug_content = """--Hello World
+local x = 1 --Hello World
 """
 
 
