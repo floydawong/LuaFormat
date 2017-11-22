@@ -123,19 +123,13 @@ class Node():
         if self.type is NodeType.BLANK:
             return ' '
         if self.type in CommentType:
-            return self._str
-        elif self._str == '\t':
-            return ' '
+            r = self._str
+            r = r.replace(r'\\n', r'\n')
+            r = r.replace(r'\\r', r'\r')
+            return r
         return self._str.strip(' ')
 
     def add(self, c):
-        if self.type is NodeType.STRING:
-            if c == '\n':
-                self._str += '\\n'
-                return
-            if c == '\t':
-                self._str += ' '
-                return
         self._str += c
 
     def make_property(attr):
@@ -166,9 +160,6 @@ def create_node(content, type=None):
     global _start_node
     global _end_node
 
-    # if _end_node:
-    #     print(str(_end_node), _end_node.type)
-
     node = Node(content)
     node.type = type
 
@@ -193,7 +184,7 @@ def insert_blank_node(node):
 
 
 def merge_prev_node(node):
-    if not node.last: return
+    if not node.last: return node
     lnode = node.last
     lnode.add(str(node))
 
@@ -219,17 +210,19 @@ def delete_node(node):
 
 def delete_forward_blank(node):
     while True:
+        node = node.last
         if node and node.type == NodeType.BLANK:
             node = delete_node(node)
         else:
             return
-        node = node.last
 
 
 def delete_backward_blank(node):
     while True:
+        node = node.next
         if node and node.type == NodeType.BLANK:
             node = delete_node(node)
+            node = node.last
         else:
             return
 
@@ -252,11 +245,10 @@ def get_forward_type(node):
 
 def get_forward_type_for_negative(node):
     while True:
+        node = node.last
         if node is None: return None
-        if node.type == NodeType.BLANK:
-            node = node.last
-            continue
-        return node.type
+        if node.type != NodeType.BLANK:
+            return node.type
 
 
 # ----------------------------------------------------------
@@ -283,111 +275,13 @@ def parse_node(content):
             node = create_node(c, ctype)
             continue
 
-        if c == '-':
-            # negative number
-            # 负号
-            pntype = get_forward_type_for_negative(node)
-            if pntype != NodeType.WORD and pntype != NodeType.REVERSE_BRACKET:
-                node = create_node(c, NodeType.WORD)
-                continue
-
-            # scientific notation
-            # 科学计数法
-            if str(node)[-1].lower() == 'e' and str(node)[-2] in [
-                    str(x) for x in range(10)
-            ]:
-                node.add(c)
-                continue
-
         if ctype == node.type and not ctype in SingletonType:
             node.add(c)
         else:
             node = create_node(c, ctype)
 
 
-def foreach_char(content):
-    global _start_node
-    prev_node = None
-
-    for c in content:
-        ctype = get_char_type(c)
-        node = create_node(c, ctype)
-
-        if prev_node:
-            if c == '-':
-                # negative number
-                # 负号
-                pntype = get_forward_type_for_negative(prev_node)
-                if pntype != NodeType.WORD and pntype != NodeType.REVERSE_BRACKET:
-                    node.type = NodeType.WORD
-
-                # scientific notation
-                # 科学计数法
-                if str(prev_node)[-1].lower() == 'e' and str(
-                        prev_node.last)[-1] in [str(x) for x in range(10)]:
-                    node.type = NodeType.WORD
-
-            prev_node.next = node
-            node.last = prev_node
-        else:
-            _start_node = node
-
-        prev_node = node
-
-
 def foreach_node():
-    current_type = None
-    string_key = ''
-
-    for node in NodeIterator():
-        char = str(node)
-
-        # Check String Finish
-        if current_type == NodeType.STRING:
-            merge_prev_node(node)
-            if string_key == char:
-                current_type = None
-                string_key = ''
-            elif get_forward_char(node, 2) == ']]' and string_key == '[[':
-                current_type = None
-                string_key = ''
-
-        # Check Comment Single Finish
-        elif current_type == NodeType.COMMENT_SINGLE:
-            if node.type == NodeType.ENTER:
-                current_type = None
-                string_key = ''
-            elif get_forward_char(node, 4) == '--[[':
-                current_type = NodeType.COMMENT_MULTI
-                string_key = ''
-                node = merge_prev_node(node)
-                node.type = NodeType.COMMENT_MULTI
-            else:
-                merge_prev_node(node)
-
-        # Check Comment Multi Finish
-        elif current_type == NodeType.COMMENT_MULTI:
-            node = merge_prev_node(node)
-            if get_forward_char(node, 2) == ']]':
-                current_type = None
-                string_key = ''
-
-        # Check String Or Comment Begin.
-        elif current_type == None:
-            if node.type == NodeType.STRING:
-                current_type = NodeType.STRING
-                string_key = char
-            elif get_forward_char(node, 2) == '--':
-                current_type = NodeType.COMMENT_SINGLE
-                string_key = ''
-                node = merge_prev_node(node)
-                node.type = NodeType.COMMENT_SINGLE
-            elif get_forward_char(node, 2) == '[[':
-                current_type = NodeType.STRING
-                string_key = '[['
-
-
-def new_foreach_node():
     node = _start_node
 
     while node:
@@ -395,11 +289,13 @@ def new_foreach_node():
             char_key = str(node)
             while True:
                 node = node.next
-                merge_prev_node(node)
-                if char_key == str(node):
+                if char_key == str(node) and get_forward_char(node,
+                                                              2)[0] != '\\':
+                    merge_prev_node(node)
                     break
                 if not node.next:
                     break
+                merge_prev_node(node)
         str_node = str(node)
         if str_node == len(str_node) * '=' and str(node.last) == '[' and str(
                 node.next) == '[':
@@ -414,18 +310,19 @@ def new_foreach_node():
 
         if get_forward_char(node, 2) == '[[':
             node = merge_prev_node(node)
-            # node.type = NodeType.STRING
+            node.type = NodeType.STRING
             while True:
                 node = node.next
                 node.type = NodeType.STRING
-                merge_prev_node(node)
                 if get_forward_char(node, 2) == ']]':
+                    node = merge_prev_node(node)
                     break
+                merge_prev_node(node)
                 if not node.next:
                     break
         if get_forward_char(node, 2) == '--':
             # COMMENT_SINGLE
-            node = merge_prev_node(node)
+            # node = merge_prev_node(node)
             node.type = NodeType.COMMENT_SINGLE
             while True:
                 node = node.next
@@ -439,7 +336,6 @@ def new_foreach_node():
                 end_flag = ']%s]' % ((len(str_tmp) - 4) * '=')
 
                 if str(tmp) == check_flag:
-                    # print check_flag
                     node = tmp
                     # node.type == NodeType.COMMENT_MULTI
                     while True:
@@ -454,9 +350,6 @@ def new_foreach_node():
 
         node = node.next
 
-    # for node in NodeIterator():
-    #     print(str(node), node.type)
-
 
 def foreach_blank():
     for node in NodeIterator():
@@ -468,15 +361,26 @@ def foreach_string_connect():
     for node in NodeIterator():
         if str(node) == '..':
             node.type = NodeType.OPERATOR
-        # if get_forward_char(node, 2) == '..' and \
-        # get_forward_char(node, 3) != '...' and \
-        # str(node.next) != '.' :
-        #     node = merge_prev_node(node)
-        #     node.type = NodeType.OPERATOR
 
 
 def foreach_operator():
     for node in NodeIterator():
+        if str(node) == '-':
+            # scientific notation
+            # 科学计数法
+            if node.last and str(node.last)[-1].lower() == 'e' and str(
+                    node.last)[-2] in [str(x) for x in range(10)]:
+                continue
+
+            # negative number
+            # 负号
+            pntype = get_forward_type_for_negative(node)
+            if not pntype in [
+                    NodeType.WORD, NodeType.REVERSE_BRACKET, NodeType.STRING
+            ]:
+                delete_backward_blank(node)
+                continue
+
         if node.type == NodeType.OPERATOR:
             if _settings.get('special_symbol_split'):
                 if node.last and node.last.type is not NodeType.BLANK:
@@ -488,8 +392,8 @@ def foreach_operator():
 def foreach_separator():
     for node in NodeIterator():
         if node.type == NodeType.SEPARATOR:
-            delete_forward_blank(node.last)
-            delete_backward_blank(node.next)
+            delete_forward_blank(node)
+            delete_backward_blank(node)
             if _settings.get('special_symbol_split'):
                 if node.next and node.next.type is not NodeType.BLANK:
                     insert_blank_node(node.next)
@@ -503,8 +407,8 @@ def foreach_equal():
 
     for node in NodeIterator():
         if node.type == NodeType.EQUAL:
-            delete_forward_blank(node.last)
-            delete_backward_blank(node.next)
+            delete_forward_blank(node)
+            delete_backward_blank(node)
             if _settings.get('special_symbol_split'):
                 if node.last and node.last.type is not NodeType.BLANK:
                     insert_blank_node(node)
@@ -515,13 +419,13 @@ def foreach_equal():
 def foreach_bracket():
     for node in NodeIterator():
         if node.type == NodeType.BRACKET:
-            delete_backward_blank(node.next)
+            delete_backward_blank(node)
             if _settings.get('bracket_split'):
                 if node.next and node.next.type != NodeType.BRACKET:
                     insert_blank_node(node.next)
 
         if node.type == NodeType.REVERSE_BRACKET:
-            delete_forward_blank(node.last)
+            delete_forward_blank(node)
             if _settings.get('bracket_split'):
                 if node.last and node.last.type != NodeType.REVERSE_BRACKET:
                     insert_blank_node(node)
@@ -623,22 +527,27 @@ def purge():
     _settings = {}
 
 
-def _lua_format(content, setting=None):
+def _lua_format(lines, setting=None):
     purge()
     global _settings
     _settings = setting
 
     # deal content
-    content = content.replace('\t', '')
+    content = ''
+    for line in lines:
+        line = line.replace('\t', '')
+        line = line.replace(r'\n', r'\\n')
+        line = line.replace(r'\r', r'\\r')
+        line += '\n'
+        content += line
     content += '\n'
 
-    # foreach_char(content)
     parse_node(content)
-    # foreach_node()
+    foreach_node()
     # for node in NodeIterator():
-    #     print(str(node), node.type)
-
-    new_foreach_node()
+    #     print(str(node), node.ty8e)
+    # return ""
+    # exit()
     foreach_blank()
     foreach_string_connect()
     foreach_word()
@@ -650,8 +559,8 @@ def _lua_format(content, setting=None):
 
 
 # return a string
-def lua_format(content, settings):
-    _lua_format(content, settings)
+def lua_format(lines, settings):
+    _lua_format(lines, settings)
     r = ''
     for line in _lines:
         r += str(line)
@@ -676,24 +585,3 @@ def lua_format_by_cudatext(content,
     for line in _lines:
         r.append[line]
     return r
-
-
-# ----------------------------------------------------------
-# debug
-# ----------------------------------------------------------
-
-debug_content = """--Hello World
-local x = 1 --Hello World
-"""
-
-
-def debug():
-    settings = {}
-    settings['tab_size'] = 4
-    settings['special_symbol_split'] = True
-    settings['bracket_split'] = False
-    print(lua_format(debug_content, settings))
-
-
-if __name__ == '__main__':
-    debug()

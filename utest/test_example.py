@@ -17,10 +17,22 @@ def read_file(path):
     return ''
 
 
+def read_lines(path):
+    lines = []
+    with open(path, 'r') as fp:
+        for line in fp.readlines():
+            line = line[:-1]
+            # print(line)
+            lines.append(line)
+        fp.close()
+        return lines
+    return []
+
+
 def compare_file(index, isDebug=False):
     src_path = os.path.join(EXAMPLE_PATH, str(index) + '.lua')
     target_path = os.path.join(EXAMPLE_PATH, 'target-' + str(index) + '.lua')
-    src = read_file(src_path)
+    src = read_lines(src_path)
     target = read_file(target_path)
 
     with open('../LuaFormat.sublime-settings') as fp:
@@ -38,6 +50,7 @@ def compare_file(index, isDebug=False):
             print('Example %d is OK' % index)
         else:
             print(format_content)
+            pass
 
 
 def test_all_example(index=1):
@@ -65,3 +78,4 @@ def debug_example(index=1):
 
 if __name__ == '__main__':
     debug_all_example()
+    # debug_example()

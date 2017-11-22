@@ -31,9 +31,12 @@ class LuaFormatCommand(sublime_plugin.TextCommand):
         file_suffix = suffix_setting.split('.')[0]
         if file_suffix[-3:].lower() != 'lua': return
 
-        # get content of replacement
-        region = sublime.Region(0, self.view.size())
-        content = self.view.substr(region)
+        # get lines of replacement
+        r = sublime.Region(0, self.view.size())
+        lines = []
+        for region in self.view.lines(r):
+            cache = self.view.substr(region)
+            lines.append(cache)
 
         # get cursor position before the replacement
         selection = self.view.sel()[0].b
@@ -41,7 +44,7 @@ class LuaFormatCommand(sublime_plugin.TextCommand):
 
         # replace the content after format
         print("Run Lua Format")
-        self.view.replace(edit, region, lua_format(content, get_settings()))
+        self.view.replace(edit, r, lua_format(lines, get_settings()))
 
         # deal cursor position
         selection = self.view.full_line(self.view.text_point(row - 1, 0)).b

@@ -1,3 +1,6 @@
+--string and comment
+local x = 1 --Hello World
+
 print('----- string and comment -----')
 -- print('----- string and comment -----')
 
