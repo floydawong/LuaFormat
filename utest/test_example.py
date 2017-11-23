@@ -9,6 +9,7 @@ from core.LuaFormat import lua_format
 EXAMPLE_PATH = './lua-example'
 CHECK_LIST = [
     'operator',
+    'separator',
     # 'negative',
     # 'string',
     # 'comment',
@@ -45,9 +46,15 @@ def compare_file(keyword):
     origin = os.path.join(EXAMPLE_PATH, keyword + '.lua')
     originT = os.path.join(EXAMPLE_PATH, keyword + 'T.lua')
     originF = os.path.join(EXAMPLE_PATH, keyword + 'F.lua')
-    if not os.path.exists(origin): return
-    if not os.path.exists(originT): return
-    if not os.path.exists(originF): return
+    if not os.path.exists(origin):
+        print('not exists : %s' % origin)
+        return
+    if not os.path.exists(originT):
+        print('not exists : %s' % originT)
+        return
+    if not os.path.exists(originF):
+        print('not exists : %s' % originF)
+        return
 
     content_origin = load_lines(origin)
     content_originT = load_content(originT)
