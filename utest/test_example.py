@@ -7,75 +7,78 @@ os.sys.path.append(core_directory)
 from core.LuaFormat import lua_format
 
 EXAMPLE_PATH = './lua-example'
+CHECK_LIST = [
+    'operator',
+    # 'negative',
+    # 'string',
+    # 'comment',
+]
 
 
-def read_file(path):
-    with open(path, 'r') as fp:
+def load_content(fpath):
+    with open(fpath, 'r') as fp:
         content = fp.read()
-        fp.close()
         return content
     return ''
 
 
-def read_lines(path):
+def load_lines(fpath):
     lines = []
-    with open(path, 'r') as fp:
+    with open(fpath, 'r') as fp:
         for line in fp.readlines():
             line = line[:-1]
-            # print(line)
             lines.append(line)
         fp.close()
         return lines
     return []
 
 
-def compare_file(index, isDebug=False):
-    src_path = os.path.join(EXAMPLE_PATH, str(index) + '.lua')
-    target_path = os.path.join(EXAMPLE_PATH, 'target-' + str(index) + '.lua')
-    src = read_lines(src_path)
-    target = read_file(target_path)
-
-    with open('../LuaFormat.sublime-settings') as fp:
-        s = ''
-        for line in fp.readlines():
-            if not '//' in line:
-                s += line
-        settings = json.loads(s)
-
-    format_content = lua_format(src, settings)
-    if isDebug:
-        assert format_content == target
-    else:
-        if format_content == target:
-            print('Example %d is OK' % index)
-        else:
-            print(format_content)
-            pass
+def fake_setting(flag):
+    settings = {}
+    settings['tab_size'] = 4
+    settings['special_symbol_split'] = flag
+    settings['bracket_split'] = flag
+    return settings
 
 
-def test_all_example(index=1):
-    fname = str(index) + '.lua'
-    fpath = os.path.join(EXAMPLE_PATH, fname)
-    if os.path.exists(fpath):
-        compare_file(index, True)
-        test_all_example(index + 1)
+def compare_file(keyword):
+    origin = os.path.join(EXAMPLE_PATH, keyword + '.lua')
+    originT = os.path.join(EXAMPLE_PATH, keyword + 'T.lua')
+    originF = os.path.join(EXAMPLE_PATH, keyword + 'F.lua')
+    if not os.path.exists(origin): return
+    if not os.path.exists(originT): return
+    if not os.path.exists(originF): return
+
+    content_origin = load_lines(origin)
+    content_originT = load_content(originT)
+    content_originF = load_content(originF)
+    fmt_resultT = lua_format(content_origin, fake_setting(True))
+    fmt_resultF = lua_format(content_origin, fake_setting(False))
+
+    if content_originT != fmt_resultT:
+        print('------------ %s ------------' % (keyword + 'T'))
+        print(fmt_resultT)
+        print('------------ %s ------------' % (keyword + 'T'))
+        return False
+    if content_originF != fmt_resultF:
+        print('------------ %s ------------' % (keyword + 'F'))
+        print(fmt_resultF)
+        print('------------ %s ------------' % (keyword + 'F'))
+        return False
+
+    print("Check Successful: %s" % keyword)
+    return True
 
 
-def debug_all_example(index=1):
-    fname = str(index) + '.lua'
-    fpath = os.path.join(EXAMPLE_PATH, fname)
-    if os.path.exists(fpath):
-        compare_file(index)
-        debug_all_example(index + 1)
+def test_all_example():
+    for fname in CHECK_LIST:
+        assert compare_file(fname)
 
 
-def debug_example(index=1):
-    fname = str(index) + '.lua'
-    fpath = os.path.join(EXAMPLE_PATH, fname)
-    if os.path.exists(fpath):
-        compare_file(index)
+def debug_all_example():
+    for fname in CHECK_LIST:
+        compare_file(fname)
 
 
 if __name__ == '__main__':
     debug_all_example()
-    # debug_example()
