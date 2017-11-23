@@ -382,6 +382,8 @@ def foreach_operator():
                 continue
 
         if node.type == NodeType.OPERATOR:
+            delete_forward_blank(node)
+            delete_backward_blank(node)
             if _settings.get('special_symbol_split'):
                 if node.last and node.last.type is not NodeType.BLANK:
                     insert_blank_node(node)
