@@ -1,5 +1,7 @@
 # Change Log
 
+- Fixes can not delete blank around the operator when setting:special_symbol_split is false
+
 
 ## 0.1.2
 - Fix #14
