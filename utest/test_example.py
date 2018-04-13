@@ -10,9 +10,9 @@ EXAMPLE_PATH = './lua-example'
 CHECK_LIST = [
     'operator',
     'separator',
-    # 'negative',
-    # 'string',
-    # 'comment',
+    'negative',
+#    'string',
+    'comment',
 ]
 
 
@@ -77,6 +77,7 @@ def compare_file(keyword):
     return True
 
 
+# For Utest
 def test_all_example():
     for fname in CHECK_LIST:
         assert compare_file(fname)

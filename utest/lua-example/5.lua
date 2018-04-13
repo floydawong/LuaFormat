@@ -1,5 +1,5 @@
 -- negative number
-requre "math.Pi"-1
+require "math.Pi"-1
 local x= - 1
 local a=- a
 local b= -b
