@@ -1,6 +1,10 @@
 # Change Log
 
 
+## 0.1.4
+- Delete redundant blank lines
+
+
 ## 0.1.3
 - Remove the space before the newline
 - Fixes can not delete blank around the operator when setting:special_symbol_split is false
