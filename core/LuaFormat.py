@@ -568,6 +568,11 @@ def lua_format(lines, settings):
     r = ''
     for line in _lines:
         r += str(line)
+
+    symbol = '\n\n\n'
+    while r.find(symbol) != -1:
+        r = r.replace(symbol, '\n\n')
+
     r = r[:-1]
     return r
 
