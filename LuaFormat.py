@@ -33,6 +33,9 @@ class LuaFormatCommand(sublime_plugin.TextCommand):
 
         # get lines of replacement
         r = sublime.Region(0, self.view.size())
+        self.view.unfold(r) # Fixed: https://github.com/FloydaGithub/LuaFormat/issues/16
+
+        # get characters of view
         lines = []
         for region in self.view.lines(r):
             cache = self.view.substr(region)
