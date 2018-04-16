@@ -74,6 +74,12 @@ class Line():
         r = r[:enter_pos].strip(' ') + r[enter_pos:]
         return ' ' * _settings.get('tab_size') * self._indent + r
 
+    def is_blank_line(self):
+        for node in self._nodes:
+            if node.type not in [NodeType.BLANK, NodeType.ENTER]:
+                return False
+        return True
+
     def add(self, node):
         self._nodes.append(node)
 
@@ -302,6 +308,10 @@ def foreach_node():
         if str_node == len(str_node) * '=' and str(node.last) == '[' and str(
                 node.next) == '[':
             end_flag = ']%s]' % (len(str_node) * '=')
+
+            node = merge_prev_node(node)
+            node.type = NodeType.COMMENT_SINGLE
+
             while True:
                 node = node.next
                 merge_prev_node(node)
@@ -539,12 +549,12 @@ def _lua_format(lines, setting=None):
     # deal content
     content = ''
     for line in lines:
-        line = line.replace('\t', '')
-        line = line.replace(r'\n', r'\\n')
-        line = line.replace(r'\r', r'\\r')
         line += '\n'
         content += line
     content += '\n'
+    content = content.replace('\t', '')
+    content = content.replace(r'\n', r'\\n')
+    content = content.replace(r'\r', r'\\r')
 
     parse_node(content)
     foreach_node()
@@ -565,13 +575,16 @@ def _lua_format(lines, setting=None):
 # return a string
 def lua_format(lines, settings):
     _lua_format(lines, settings)
-    r = ''
-    for line in _lines:
-        r += str(line)
 
-    symbol = '\n\n\n'
-    while r.find(symbol) != -1:
-        r = r.replace(symbol, '\n\n')
+    r = ''
+    blank_line_count = 0
+    for line in _lines:
+        if line.is_blank_line():
+            blank_line_count += 1
+            if blank_line_count >= 2: continue
+        else:
+            blank_line_count = 0
+        r += str(line)
 
     r = r[:-1]
     return r
