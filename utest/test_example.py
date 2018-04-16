@@ -11,7 +11,7 @@ CHECK_LIST = [
     'operator',
     'separator',
     'negative',
-#    'string',
+    'string',
     'comment',
 ]
 
