@@ -3,6 +3,8 @@
 
 ## 0.1.5
 - unfolding code before format
+- modify keymap
+
 
 ## 0.1.4
 - Delete redundant blank lines
