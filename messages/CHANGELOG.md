@@ -2,11 +2,9 @@
 
 
 ## 0.1.5
-- unfolding code before format
-- modify keymap
-
-
-## 0.1.4
+- Unfolding code before run `lua format`
+- Optimize shortcut keys to prevent conflicts with other packages
+- Change default setting of `auto_format_on_save` to False
 - Delete redundant blank lines
 
 
@@ -22,13 +20,13 @@
 
 ## 0.1.1
 - Fix #12
-- Fix `--[=[comment]=]` can not recognized as comment.
-- Fix `[=[string]=]` can not recognized as string.
-- Fix the indentation error `do .. end` after `if then` or `for do`.
+- Fix `--[=[comment]=]` can not recognized as comment
+- Fix `[=[string]=]` can not recognized as string
+- Fix the indentation error `do .. end` after `if then` or `for do`
 
 
 ## 0.1.0
-> The basic functionality has been done.
+> The basic functionality has been done
 - Automatic indentation
 - Separation of special characters
 - Tab size via settings
@@ -38,9 +36,9 @@
 
 
 ## 0.0.12
-- Fix strings and comment priority bugs.
-- Fix nested bugs in string.
-- Fix the bug for comment movement.
+- Fix strings and comment priority bugs
+- Fix nested bugs in string
+- Fix the bug for comment movement
 
 
 ## 0.0.8
@@ -49,6 +47,6 @@
 
 
 ## 0.0.4
-- Added default setting.
-- Run `lua format` when set `auto_format_on_save` in settings.
-- Set the format of the symbols in the settings.
+- Added default setting
+- Run `lua format` when set `auto_format_on_save` in settings
+- Set the format of the symbols in the settings
