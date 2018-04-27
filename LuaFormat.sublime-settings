@@ -16,5 +16,5 @@
     "bracket_split": false,
 
     // run `Lua Format` automatically when save file
-    "auto_format_on_save": true
+    "auto_format_on_save": false
 }
