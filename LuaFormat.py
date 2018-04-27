@@ -50,6 +50,9 @@ class LuaFormatCommand(sublime_plugin.TextCommand):
         print("Run Lua Format")
         self.view.replace(edit, r, lua_format(lines, get_settings()))
 
+        # set tab_size from lua-format-setting
+        self.view.run_command("set_setting", {"setting": "tab_size", "value": get_settings().get('tab_size', 4)})
+
         # deal cursor position
         selection = self.view.full_line(self.view.text_point(row - 1, 0)).b
         cursor_pos = sublime.Region(selection, selection)
