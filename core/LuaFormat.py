@@ -514,6 +514,7 @@ def tidy_indent():
                 line = create_line()
                 deal_indent(line)
             line_indent = 0
+            del line_key_dict
             line_key_dict = {}
 
         if str(node) == 'else' or str(node) == 'elseif':
@@ -562,13 +563,17 @@ def _lua_format(lines, setting=None):
     #     print(str(node), node.ty8e)
     # return ""
     # exit()
+
     foreach_blank()
     foreach_string_connect()
     foreach_word()
+
+    foreach_bracket()
+
     foreach_operator()
     foreach_separator()
     foreach_equal()
-    foreach_bracket()
+
     tidy_indent()
 
 
