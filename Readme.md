@@ -14,25 +14,33 @@ Search `LuaFormat` via `Package Control: Install Package`
 
 - Git
 
-git clone this repository to `Sublime Packages Path`
+git clone this repository to `Packages Path`
 
 - Zip
 
-download zip and unzip to `Sublime Packages Path`
+download zip and unzip to `Packages Path`
 
 
 ## Usage
 
-- Settings
-    - Preferences -> Package Settings -> LuaFormat -> `Settings - User`
-    - `Ctrl + Shift + P` -> `LuaFormat: Settings`
+- Command Panel
+> `Ctrl + Shift + P`
+    - `LuaFormat: Key Bindings`
+    - `LuaFormat: Settings`
 
-- Key Bindings
-    - Preferences -> Package Settings -> LuaFormat -> `Key Bindings - User`
-    - `Ctrl + Shift + P` -> `LuaFormat: Key Bindings`
+- Menu
+> Preferences -> Package Settings -> LuaFormat
+    - `Settings - User`
+    - `Key Bindings - User`
 
 - Shortcuts
     - `Ctrl + Alt + F`
+
+- Settings
+    - `tab_size`: the number of spaces a tab
+    - `special_symbol_split`: split special symbol with a spaces
+    - `bracket_split`: split bracket with a spaces
+    - `auto_format_on_save`: run `Lua Format` automatically when saved file
 
 
 [version-image]: https://badge.fury.io/gh/floydagithub%2Fluaformat.svg
