@@ -2,36 +2,31 @@
 
 Thanks for installing LuaFormat!!!
 
+# In the following two cases, the plug-in is valid.
+    1. file suffix is '.lua'
+    2. syntax format is `Lua`
 
-The current file suffix is '.lua', or syntax format is lua, this package can be run.
-In the settings file, `auto_format_on_save` is true. It can be automatic formatting when saving (also advised to do so).
+# How To Use
+    1. Through shortcuts `Ctrl + Alt + F` to format the code within the current view.
+    2. In the settings file, `auto_format_on_save` is true. It can be automatic formatting when saving.
 
+# Bugs
 
-## Usage
-
-- Settings
-    - Preferences -> Package Settings -> LuaFormat -> Settings - User
-    - Ctrl + Shift + P -> LuaFormat: Settings
-
-- Key Bindings
-    - Preferences -> Package Settings -> LuaFormat -> Key Bindings - User
-    - Ctrl + Shift + P -> LuaFormat: Key Bindings
-
-- Shortcuts
-    - Ctrl + Alt + F
+The plugin does not perfectly format Lua code, and if you have a problem, create a issee and commit `Demo Code` to [issues](https://github.com/FloydaGithub/LuaFormat/issues)
 
 --------------------------------------------------------------------------------
+# 格式化Lua插件
+
 欢迎使用Lua的格式化插件.
 
-如果文件名后缀是'.lua'或者语法格式是Lua时, 可以通过快捷键'Ctrl + Alt + F'来格式化Lua代码.
-在配置文件中, 'auto_format_on_save'默认是true, 即保存的时候, 自动格式化.(推荐)
---------------------------------------------------------------------------------
-luaのフォーマットプラグインは歓迎される
+## 2种情况, 该插件是有效的:
+    1. 文件名后缀为`.lua`
+    2. 当前的语法格式为`Lua`
 
-件名ば接尾辞は' . lua '文法やフォーマットはlua時、ショートカットキーを通じてできる' ctrl + alt + f ' luaコードのフォーマットに来ます。
-ファイル配置で、'auto_format_on_save'黙認はtrue、すなわち保存したとき、自動フォーマット(推薦)。
---------------------------------------------------------------------------------
-Lua를 사용하는 격식을 환영 합니다.
+## 怎么使用?
+    1. 通过快捷键``Ctrl + Alt + F`来格式化当前页面内的代码.
+    2. 在配置文件中, `auto_format_on_save`设置为`true`, 则保存文件之前会自动格式化代码.
 
-'lua'나 어법 격식이 lua에 있을 때는 빠 른'Ctrl + Alt + F'를 통해 lua 코드를 만들 수 있다.
-'auto_format_on_save'의 배치는 true, 즉 보존 할 때 자동화 되어 있다 (추천).
+## Bugs
+
+该插件还不能完美的格式化Lua代码, 如果遇到问题, 请提交`Demo Code`到 [issues](https://github.com/FloydaGithub/LuaFormat/issues)
