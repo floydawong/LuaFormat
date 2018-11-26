@@ -72,6 +72,7 @@ class Line():
             r += str(node)
         enter_pos = r.find('\n')
         r = r[:enter_pos].strip(' ') + r[enter_pos:]
+        if r.strip(' ') == '\n': return '\n' #20
         return ' ' * _settings.get('tab_size') * self._indent + r
 
     def is_blank_line(self):
