@@ -594,22 +594,3 @@ def lua_format(lines, settings):
 
     r = r[:-1]
     return r
-
-
-# return a list of string for CudeText.
-def lua_format_by_cudatext(content,
-                           tab_size=4,
-                           separator_exclude=True,
-                           operator_exclude=True,
-                           bracket_exclude=False):
-    settings = {}
-    settings['tab_size'] = tab_size
-    settings['special_symbol_split'] = separator_exclude
-    settings['bracket_split'] = bracket_exclude
-
-    _lua_format(content, settings)
-
-    r = []
-    for line in _lines:
-        r.append[line]
-    return r
