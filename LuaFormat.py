@@ -14,9 +14,9 @@ def reload(name):
 
 reload('LuaFormat.core')
 
-if sublime.version().startswith('3'):
+try:
     from .core import *
-else:
+except:
     from core import *
 
 
